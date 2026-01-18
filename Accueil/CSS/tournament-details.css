@@ -3,6 +3,8 @@
 /* ========== STRUCTURE PAGE TOURNOI ========== */
 #page-tournament .container {
     padding-top: 0px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 #tournament-details {
@@ -406,11 +408,13 @@
     background: #000000;
 }
 
-/* ========== LEADERBOARD ========== */
+/* ========== LEADERBOARD - CORRECTION LARGEUR ========== */
 .leaderboard-wls {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
 }
 
 .qualifier-info-wls {
@@ -421,6 +425,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 8px;
+    table-layout: fixed;
 }
 
 .leaderboard-table-wls thead tr {
@@ -428,7 +433,7 @@
 }
 
 .leaderboard-table-wls th {
-    padding: 12px 15px;
+    padding: 12px 8px;
     text-align: left;
     color: #ffffff;
     font-weight: 700;
@@ -437,10 +442,17 @@
     letter-spacing: 0.5px;
     background: #000000;
     border: 1px solid #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .leaderboard-table-wls th:first-child {
     border-left: 1px solid #ffffff;
+    width: 8%;
+}
+
+.leaderboard-table-wls th:nth-child(2) {
+    width: 40%;
 }
 
 .leaderboard-table-wls th:last-child {
@@ -454,13 +466,15 @@
 }
 
 .leaderboard-table-wls td {
-    padding: 10px 15px;
+    padding: 10px 8px;
     font-size: 14px;
     color: #ffffff;
     border: 1px solid #ffffff;
     border-left: none;
     border-right: none;
     background: #000000;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .leaderboard-table-wls tbody tr td:first-child {
@@ -810,6 +824,13 @@
     .search-bar-wls input {
         width: 100%;
     }
+    
+    /* LEADERBOARD responsive SANS scroll */
+    .leaderboard-table-wls th,
+    .leaderboard-table-wls td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -902,19 +923,20 @@
         font-size: 13px;
     }
     
-    /* LEADERBOARD compact sur mobile */
+    /* LEADERBOARD compact sur mobile SANS scroll */
     .leaderboard-table-wls {
         font-size: 11px;
     }
     
     .leaderboard-table-wls th,
     .leaderboard-table-wls td {
-        padding: 6px 8px;
+        padding: 6px 4px;
         font-size: 11px;
     }
     
     .leaderboard-table-wls th {
-        font-size: 10px;
+        font-size: 9px;
+        letter-spacing: 0;
     }
     
     .rank-cell {
@@ -923,6 +945,10 @@
     
     .team-cell {
         font-size: 11px;
+        white-space: normal !important;
+        word-wrap: break-word;
+        line-height: 1.3;
+        max-width: none;
     }
     
     .points-cell {
@@ -931,11 +957,11 @@
     
     .qualified-badge,
     .not-qualified-badge {
-        width: 16px;
-        height: 16px;
-        font-size: 10px;
-        line-height: 16px;
-        margin-right: 6px;
+        width: 14px;
+        height: 14px;
+        font-size: 9px;
+        line-height: 14px;
+        margin-right: 4px;
     }
     
     .placement-grid {
@@ -1006,19 +1032,19 @@
         font-size: 8px;
     }
     
-    /* LEADERBOARD encore plus compact sur très petits écrans */
+    /* LEADERBOARD très compact SANS scroll */
     .leaderboard-table-wls {
         font-size: 10px;
     }
     
     .leaderboard-table-wls th,
     .leaderboard-table-wls td {
-        padding: 5px 6px;
+        padding: 5px 3px;
         font-size: 10px;
     }
     
     .leaderboard-table-wls th {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .rank-cell {
@@ -1027,18 +1053,22 @@
     
     .team-cell {
         font-size: 10px;
+        white-space: normal !important;
+        word-wrap: break-word;
+        line-height: 1.2;
+        max-width: none;
     }
     
     .points-cell {
-        font-size: 12px;
+        font-size: 11px;
     }
     
     .qualified-badge,
     .not-qualified-badge {
-        width: 14px;
-        height: 14px;
-        font-size: 9px;
-        line-height: 14px;
-        margin-right: 5px;
+        width: 12px;
+        height: 12px;
+        font-size: 8px;
+        line-height: 12px;
+        margin-right: 3px;
     }
 }
