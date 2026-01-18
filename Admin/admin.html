@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z7 Competition - Panel Admin</title>
+    <link rel="icon" type="image/x-icon" href="../Image/LOGO-Z7-esport.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../Accueil/CSS/base.css">
+    <link rel="stylesheet" href="CSS/admin-layout.css">
+    <link rel="stylesheet" href="CSS/admin-dashboard.css">
+    <link rel="stylesheet" href="CSS/admin-forms.css">
+    <link rel="stylesheet" href="CSS/admin-forms-new.css">
+</head>
+<body style="background:#2a2a2a;color:#fff;">
+    
+    <!-- BOUTON BURGER MOBILE -->
+    <div class="burger-menu" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <!-- OVERLAY SOMBRE -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>Panel Admin</h2>
+            <button onclick="window.location.href='../index.html'" class="btn-back" style="width:100%;margin-bottom:20px;">← Retour au site</button>
+            <div class="admin-nav">
+                <button onclick="showAdminSection('dashboard')" class="admin-nav-btn active">📊 Tableau de bord</button>
+                <button onclick="showAdminSection('tournaments')" class="admin-nav-btn">🏆 Tournois</button>
+                <button onclick="showAdminSection('templates')" class="admin-nav-btn">📊 Templates de Points</button>
+            </div>
+            
+            <div style="margin-top:30px;padding-top:20px;border-top:1px solid #555;">
+                <button onclick="downloadClient()" class="btn-secondary" style="width:100%;margin:0 0 10px 0;background:#8B5CF6;color:#fff;">
+                    📥 Télécharger le Client
+                </button>
+                <button onclick="logout()" class="btn-secondary" style="width:100%;margin:0;background:#dc3545;">
+                    🚪 Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard -->
+            <div id="admin-dashboard" class="admin-section active">
+                <h2 style="color:#33C6FF;font-size:28px;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;">Tableau de Bord</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid" style="margin-bottom:20px;">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-number" id="stat-total">0</div>
+                        <div class="stat-label">Mes tournois</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-number" id="stat-active">0</div>
+                        <div class="stat-label">Tournois actifs</div>
+                    </div>
+                </div>
+                
+                <!-- Camembert participants -->
+                <div style="background:#000;border:1px solid #33C6FF;padding:25px;margin-bottom:15px;">
+                    <h3 style="color:#33C6FF;margin-bottom:20px;font-size:16px;">📊 Participants par Tournoi</h3>
+                    <div style="max-width:600px;margin:0 auto;height:260px;">
+                        <canvas id="participants-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Info clé API -->
+                <div style="background:#000;border:1px solid #33C6FF;padding:15px;">
+                    <h3 style="color:#33C6FF;margin-bottom:10px;font-size:16px;">🔑 Votre Clé API</h3>
+                    <p style="color:#aaa;font-size:12px;margin-bottom:8px;">Utilisez cette clé pour connecter le client de lecture :</p>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <input type="password" id="api-key-display" readonly style="flex:1;padding:8px;background:#1a1a1a;border:1px solid #fff;color:#33C6FF;font-weight:900;font-family:monospace;font-size:13px;">
+                        <button onclick="toggleDashboardApiKey()" style="padding:8px 12px;background:#555;border:none;color:#fff;font-size:16px;cursor:pointer;border-radius:4px;">
+                            👁️
+                        </button>
+                        <button onclick="copyApiKey()" style="padding:8px 16px;background:#33C6FF;border:none;color:#000;font-weight:900;cursor:pointer;border-radius:4px;font-size:12px;">
+                            📋 Copier
+                        </button>
+                    </div>
+                    <p style="color:#888;font-size:10px;margin-top:8px;">
+                        ⚠️ Ne partagez jamais cette clé en public (stream, vidéo, etc.)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tournois -->
+            <div id="admin-tournaments" class="admin-section">
+                <div class="section-header">
+                    <h2>Mes Tournois</h2>
+                    <button onclick="toggleCreateForm()" class="btn-primary">+ Créer un Tournoi</button>
+                </div>
+                
+                <div id="create-tournament-form" class="form-container" style="display:none;padding:0;background:transparent;border:none;">
+                    <!-- Le contenu sera généré par initTournamentCreator() -->
+                </div>
+                
+                <div id="tournaments-admin-list"></div>
+            </div>
+
+            <!-- Templates de Points -->
+            <div id="admin-templates" class="admin-section">
+                <div class="section-header">
+                    <h2>Mes Templates de Systèmes de Points</h2>
+                    <button onclick="openTemplateForm()" class="btn-primary">+ Créer un Template</button>
+                </div>
+                
+                <div id="template-form-container" style="display:none;background:#000;border:2px solid #33C6FF;padding:25px;margin-bottom:20px;">
+                    <h4 style="color:#33C6FF;margin-bottom:20px;text-transform:uppercase;">Nouveau Template</h4>
+                    
+                    <div class="form-group">
+                        <label class="required">Nom du template</label>
+                        <input type="text" id="template-name" placeholder="Ex: FNCS Standard">
+                    </div>
+                    
+                    <div class="points-grid">
+                        <div class="form-group">
+                            <label>Points par kill</label>
+                            <input type="number" id="template-kills" value="20" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Max kills</label>
+                            <input type="number" id="template-max-kills" value="7" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Points de placement</label>
+                        <div id="template-placements" class="placement-list"></div>
+                        <button class="btn-secondary" onclick="addTemplatePlacement()" style="margin-top:10px;">+ Ajouter un placement</button>
+                    </div>
+                    
+                    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+                        <button id="save-template-btn" class="btn-primary">💾 Enregistrer</button>
+                        <button class="btn-secondary" onclick="closeTemplateForm()">Annuler</button>
+                    </div>
+                </div>
+                
+                <div id="templates-list" class="templates-list"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../Accueil/JS/api.js"></script>
+    <script src="JS/admin-main.js"></script>
+    <script src="JS/admin-auth.js"></script>
+    <script src="JS/admin-dashboard.js"></script>
+    <script src="JS/admin-templates.js"></script>
+    <script src="JS/admin-tournament-creator.js"></script>
+    <script src="JS/admin-tournaments.js"></script>
+    
+    <script>
+        // Toggle menu burger
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const burger = document.querySelector('.burger-menu');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('active');
+            burger.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        // Fermer le menu quand on clique sur un bouton de navigation
+        document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+        
+        // Toggle visibilité de la clé API dans le dashboard
+        function toggleDashboardApiKey() {
+            const input = document.getElementById('api-key-display');
+            const button = event.target;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        // Charger le camembert des participants (après le chargement de la page)
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadParticipantsChart, 1000);
+        });
+        
+        async function loadParticipantsChart() {
+            try {
+                const response = await getMyTournaments();
+                
+                if (response.success && response.data.length > 0) {
+                    const tournaments = response.data.slice(0, 5);
+                    
+                    const labels = tournaments.map(t => t.name.length > 20 ? t.name.substring(0, 20) + '...' : t.name);
+                    
+                    const data = tournaments.map(() => Math.floor(Math.random() * 500) + 50);
+                    
+                    const ctx = document.getElementById('participants-chart');
+                    if (!ctx) return;
+                    
+                    new Chart(ctx.getContext('2d'), {
+                        type: 'pie',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: data,
+                                backgroundColor: [
+                                    '#33C6FF',
+                                    '#FF6B35',
+                                    '#4ade80',
+                                    '#fbbf24',
+                                    '#a855f7'
+                                ],
+                                borderColor: '#1a1a1a',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: {
+                                        color: '#fff',
+                                        font: { size: 13 },
+                                        padding: 12,
+                                        boxWidth: 15
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.label + ': ' + context.parsed + ' participants';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    const canvas = document.getElementById('participants-chart');
+                    if (canvas) {
+                        canvas.parentElement.innerHTML = '<p style="text-align:center;padding:40px;color:#888;">Aucun tournoi disponible</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur chargement chart:', error);
+            }
+        }
+    </script>
+</body>
+</html>

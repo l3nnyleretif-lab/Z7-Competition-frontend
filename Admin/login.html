@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z7 Competition - Connexion Admin</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../Accueil/CSS/base.css">
+    <link rel="stylesheet" href="CSS/admin-login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>🔐 Connexion Admin</h2>
+            <p style="text-align:center;color:#aaa;font-size:14px;margin-bottom:20px;">
+                Entrez votre clé API et votre mot de passe
+            </p>
+            
+            <input type="text" id="admin-apikey" placeholder="Clé API">
+            <input type="password" id="admin-password" placeholder="Mot de passe">
+            
+            <button onclick="adminLogin()">Se connecter</button>
+            
+            <div id="login-error" class="error-message" style="display:none;"></div>
+            
+            <div style="margin-top:30px;padding-top:20px;border-top:1px solid #555;">
+                <p style="text-align:center;color:#aaa;font-size:12px;margin-bottom:10px;">
+                    Vous n'avez pas de clé API ?
+                </p>
+                <p style="text-align:center;">
+                    <a href="#" style="color:#33C6FF;text-decoration:none;font-size:14px;">
+                        📝 Demander une clé API
+                    </a>
+                </p>
+            </div>
+            
+            <div style="margin-top:15px;">
+                <p style="text-align:center;">
+                    <a href="../index.html" style="color:#888;text-decoration:none;font-size:13px;">
+                        ← Retour à l'accueil
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="../Accueil/JS/data.js"></script>
+    <script src="JS/admin-auth.js"></script>
+</body>
+</html>

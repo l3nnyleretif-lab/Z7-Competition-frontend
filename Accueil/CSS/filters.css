@@ -1,0 +1,98 @@
+/* ========== FILTRES - STYLE CADRE NOIR/BLANC ========== */
+.filters-bar {
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    padding: 15px 25px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px 15px;
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.filter-group select option {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    outline: none;
+}
+
+.filter-group select:focus,
+.filter-group select:hover {
+    border-color: #33C6FF;
+    background: #000000;
+}
+
+/* ========== RESPONSIVE FILTERS ========== */
+@media (max-width: 768px) {
+    .filters-bar {
+        flex-direction: row;
+        padding: 15px;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .filter-group label {
+        font-size: 11px;
+    }
+    
+    .filter-group select {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-bar {
+        padding: 12px;
+        gap: 8px;
+    }
+    
+    .filter-group label {
+        font-size: 10px;
+    }
+    
+    .filter-group select {
+        padding: 7px 8px;
+        font-size: 11px;
+    }
+}

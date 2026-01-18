@@ -1,0 +1,231 @@
+/* ========== FORMS ========== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    color: #33C6FF;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.form-container {
+    background: #000000;
+    padding: 25px;
+    border-radius: 0;
+    margin-bottom: 20px;
+    border: 1px solid #ffffff;
+    transition: all 0.3s;
+}
+
+.form-container:hover {
+    border-color: #33C6FF;
+}
+
+.form-container h3 {
+    color: #33C6FF;
+    margin-bottom: 15px;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: #1a1a1a;
+    border: 1px solid #ffffff;
+    color: #fff;
+    border-radius: 0;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.form-container input:focus,
+.form-container textarea:focus,
+.form-container select:focus {
+    outline: none;
+    border-color: #33C6FF;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stage-config-item {
+    margin-bottom: 15px;
+}
+
+/* ========== CARTES TOURNOIS - IMAGE FORMAT 1080x1550 (PORTRAIT) ========== */
+#tournaments-admin-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.tournament-admin-item {
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 15px;
+    padding: 15px;
+    transition: all 0.3s;
+    overflow: hidden;
+    height: 200px;
+    align-items: start;
+}
+
+.tournament-admin-item:hover {
+    border-color: #33C6FF;
+    transform: translateY(-2px);
+}
+
+/* Image FORMAT PORTRAIT - Ratio 1080x1550 (approximativement 0.7:1) */
+.tournament-admin-image {
+    width: 120px;
+    height: 172px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.tournament-admin-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+
+/* Contenu textuel - LÉGÈREMENT AGRANDI */
+.tournament-admin-info {
+    flex: 1;
+    padding-right: 10px;
+    max-height: 172px;
+    overflow: hidden;
+}
+
+.tournament-admin-info h3 {
+    font-size: 14px;
+    margin-bottom: 7px;
+    color: #33C6FF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.2;
+}
+
+.tournament-admin-info p {
+    margin-bottom: 3px;
+    font-size: 11px;
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.tournament-admin-info p span {
+    color: #aaa;
+}
+
+/* Actions - À DROITE, EN COLONNE */
+.tournament-admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 110px;
+    flex-shrink: 0;
+}
+
+.tournament-admin-actions button {
+    width: 100%;
+    padding: 9px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* ========== RESPONSIVE ADMIN FORMS ========== */
+@media (max-width: 1400px) {
+    #tournaments-admin-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    /* GARDER 2 COLONNES SUR MOBILE */
+    #tournaments-admin-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .tournament-admin-item {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 8px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Image ENTIÈRE - contain au lieu de cover */
+    .tournament-admin-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1080 / 1550;
+    }
+    
+    .tournament-admin-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+    
+    .tournament-admin-info {
+        max-height: none;
+        width: 100%;
+    }
+    
+    /* Textes plus petits */
+    .tournament-admin-info h3 {
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+    
+    .tournament-admin-info p {
+        font-size: 9px;
+        margin-bottom: 2px;
+    }
+    
+    /* Boutons CENTRÉS et empilés verticalement */
+    .tournament-admin-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .tournament-admin-actions button {
+        width: 90%;
+        max-width: 150px;
+        padding: 6px 8px;
+        font-size: 9px;
+        text-align: center;
+    }
+}

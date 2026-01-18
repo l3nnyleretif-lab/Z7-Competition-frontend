@@ -1,0 +1,86 @@
+/* ========== RESET & BASE ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial Black', sans-serif;
+    background: #2a2a2a;
+    background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 199px, rgba(80,80,80,.5) 199px, rgba(80,80,80,.5) 200px),
+        repeating-linear-gradient(90deg, transparent, transparent 199px, rgba(80,80,80,.5) 199px, rgba(80,80,80,.5) 200px);
+    background-size: 200px 200px;
+    background-attachment: fixed;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ========== PAGES ========== */
+.page {
+    display: none;
+    padding-top: 100px;
+}
+
+.page.active {
+    display: block;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========== BUTTONS ========== */
+.btn-back {
+    padding: 10px 20px;
+    background: #555;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background: #33C6FF;
+    transform: translateY(-2px);
+}
+
+/* ========== TABLE ========== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #38383800;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #33C6FF;
+    color: #000;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+tr:not(:last-child) {
+    border-bottom: 1px solid #555;
+}
+
+tr:hover {
+    background: rgba(51, 198, 255, 0.1);
+}

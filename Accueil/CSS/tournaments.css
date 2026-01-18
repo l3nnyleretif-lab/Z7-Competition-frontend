@@ -1,0 +1,276 @@
+/* ========== SECTION TOURNOIS ========== */
+.tournaments-section {
+    margin-bottom: 60px;
+}
+
+/* Ligne séparatrice tricolore */
+.section-separator {
+    width: 100vw;
+    height: 2px;
+    background: linear-gradient(90deg, #0055A4 0%, #0055A4 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #EF4135 66.66%, #EF4135 100%);
+    margin-bottom: 30px;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+}
+
+/* Boîte d'en-tête */
+.section-header-box {
+    position: relative;
+    margin-bottom: 30px;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, rgba(180, 50, 70, 0.8) 0%, rgba(140, 40, 50, 0.8) 100%);
+    clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%);
+    max-width: 300px;
+}
+
+.section-header-box.finished {
+    background: linear-gradient(135deg, rgba(180, 50, 70, 0.8) 0%, rgba(140, 40, 50, 0.8) 100%);
+}
+
+.section-title-new {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: #fff;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+}
+
+.section-title-new.finished {
+    color: #fff;
+}
+
+/* ========== GROUPES PAR MOIS ========== */
+.month-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Barre verticale */
+.month-group::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 45px;
+    width: 2px;
+    height: calc(100% - 35px);
+    background: #33C6FF;
+}
+
+.month-group.finished::before {
+    background: #666;
+}
+
+.month-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+    padding: 4px 0;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    position: relative;
+    padding-left: 0;
+    margin-left: -5px;
+    z-index: 1;
+}
+
+/* ========== GRID TOURNOIS ========== */
+.tournaments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-left: 20px;
+}
+
+.tournament-card {
+    background: #3a3a3a;
+    border-radius: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    border: none;
+    position: relative;
+    max-width: 230px;
+}
+
+.tournament-card:hover {
+    transform: scale(1.05);
+}
+
+.tournament-card.finished {
+    opacity: 0.7;
+}
+
+.tournament-card.finished:hover {
+    transform: scale(1.05);
+}
+
+.tournament-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+
+.tournament-card-content {
+    padding: 15px;
+    background: #000;
+    border-left: 2px solid var(--tournament-color, #33C6FF);
+    border-right: 2px solid var(--tournament-color, #33C6FF);
+    border-bottom: 2px solid var(--tournament-color, #33C6FF);
+    border-top: none;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 0;
+}
+
+.tournament-card-content h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.tournament-date {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.tournament-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tournament-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    background: var(--tournament-color, #33C6FF);
+    color: #000;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tournament-badge.finished {
+    background: #555;
+    color: #fff;
+}
+
+/* ========== RESPONSIVE TOURNAMENTS ========== */
+@media (max-width: 768px) {
+    .tournaments-section {
+        margin-bottom: 40px;
+    }
+    
+    .section-separator {
+        margin-bottom: 20px;
+    }
+    
+    .section-header-box {
+        padding: 8px 20px;
+        max-width: 200px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title-new {
+        font-size: 16px;
+    }
+    
+    .month-title {
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .tournaments-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+        margin-left: 15px;
+    }
+    
+    .tournament-card {
+        max-width: 150px;
+    }
+    
+    .tournament-card img {
+        height: auto;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+    }
+    
+    .tournament-card-content {
+        padding: 10px;
+        height: 90px;
+    }
+    
+    .tournament-card-content h3 {
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+    
+    .tournament-date {
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+    
+    .tournament-badge {
+        padding: 3px 8px;
+        font-size: 8px;
+    }
+    
+    .month-group::before {
+        left: 0;
+        top: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-header-box {
+        padding: 6px 15px;
+        max-width: 160px;
+    }
+    
+    .section-title-new {
+        font-size: 14px;
+    }
+    
+    .tournaments-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .tournament-card {
+        max-width: 120px;
+    }
+    
+    .tournament-card img {
+        height: auto;
+        aspect-ratio: 2/3;
+    }
+    
+    .tournament-card-content {
+        padding: 8px;
+        height: 80px;
+    }
+    
+    .tournament-card-content h3 {
+        font-size: 10px;
+        margin-bottom: 4px;
+    }
+    
+    .tournament-date {
+        font-size: 9px;
+        margin-bottom: 5px;
+    }
+    
+    .tournament-badge {
+        padding: 2px 6px;
+        font-size: 7px;
+    }
+}
