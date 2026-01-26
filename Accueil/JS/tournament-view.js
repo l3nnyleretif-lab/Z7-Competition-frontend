@@ -244,7 +244,7 @@ function getPlayerQualificationStatus(rank, topQualifiers) {
     }
 }
 
-// ✅ FONCTION CORRIGÉE : Regrouper les joueurs selon leur mate actuel
+// ✅ FONCTION CORRIGÉE : Ne PAS additionner les points des duos
 function renderLeaderboardTab(content) {
     const stageIndex = selectedTournament.stages.findIndex(s => s.name === selectedStage.name);
     const stageId = stageIndex + 1;
@@ -254,12 +254,7 @@ function renderLeaderboardTab(content) {
     
     console.log('🔍 PLAYERS REÇUS DU BACKEND:', players);
     
-    // ✅ NOUVELLE LOGIQUE : Créer un Map des joueurs par nom pour faciliter la recherche
-    const playersByName = new Map();
-    players.forEach(p => {
-        playersByName.set(p.name, p);
-    });
-    
+    // ✅ NOUVELLE LOGIQUE : Regrouper les joueurs selon leur mate actuel
     const displayGroups = new Map();
     const processedPlayers = new Set();
     
@@ -268,9 +263,11 @@ function renderLeaderboardTab(content) {
         if (processedPlayers.has(player.epicId)) return;
         
         if (player.currentMate) {
-            // Chercher le mate parmi tous les noms possibles
+            // Joueur a un mate → Trouver le mate dans la liste
             const mateNames = player.currentMate.split(' & ');
-            const mates = mateNames.map(name => playersByName.get(name)).filter(Boolean);
+            const mates = mateNames.map(name => 
+                players.find(p => p.name === name)
+            ).filter(Boolean);
             
             if (mates.length > 0) {
                 // On a trouvé au moins un mate
@@ -282,14 +279,14 @@ function renderLeaderboardTab(content) {
                 // Marquer tous comme traités
                 allPlayers.forEach(p => processedPlayers.add(p.epicId));
                 
-                // Créer l'entrée groupée
-               displayGroups.set(groupKey, {
-    name: groupName,
-    points: allPlayers[0].points,  // ✅ PRENDRE LES POINTS D'UN SEUL JOUEUR
-    kills: allPlayers[0].kills,
-    wins: allPlayers[0].wins,
-    games: allPlayers[0].games
-});
+                // ✅ CORRECTION : Prendre les points d'UN SEUL joueur (pas additionner)
+                displayGroups.set(groupKey, {
+                    name: allPlayers.map(p => p.name).sort().join(' & '),
+                    points: player.points,  // ✅ Points d'un seul joueur
+                    kills: player.kills,    // ✅ Kills d'un seul joueur
+                    wins: player.wins,      // ✅ Wins d'un seul joueur
+                    games: player.games     // ✅ Games d'un seul joueur
+                });
             } else {
                 // Mate non trouvé → Afficher seul
                 displayGroups.set(player.epicId, {
@@ -483,5 +480,6 @@ function renderPrizepoolTab(content) {
         </div>
     `;
 }
+
 
 
