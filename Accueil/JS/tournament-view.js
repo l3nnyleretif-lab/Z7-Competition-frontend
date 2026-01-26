@@ -254,7 +254,12 @@ function renderLeaderboardTab(content) {
     
     console.log('🔍 PLAYERS REÇUS DU BACKEND:', players);
     
-    // ✅ NOUVELLE LOGIQUE : Regrouper les joueurs selon leur mate actuel
+    // ✅ NOUVELLE LOGIQUE : Créer un Map des joueurs par nom pour faciliter la recherche
+    const playersByName = new Map();
+    players.forEach(p => {
+        playersByName.set(p.name, p);
+    });
+    
     const displayGroups = new Map();
     const processedPlayers = new Set();
     
@@ -263,28 +268,30 @@ function renderLeaderboardTab(content) {
         if (processedPlayers.has(player.epicId)) return;
         
         if (player.currentMate) {
-            // Joueur a un mate → Trouver le mate dans la liste
-            const matePlayer = players.find(p => 
-                p.name === player.currentMate || 
-                player.currentMate.split(' & ').includes(p.name)
-            );
+            // Chercher le mate parmi tous les noms possibles
+            const mateNames = player.currentMate.split(' & ');
+            const mates = mateNames.map(name => playersByName.get(name)).filter(Boolean);
             
-            if (matePlayer && !processedPlayers.has(matePlayer.epicId)) {
-                // Créer une clé unique pour le duo (alphabétique pour éviter doublons)
-                const groupKey = [player.epicId, matePlayer.epicId].sort().join('_');
+            if (mates.length > 0) {
+                // On a trouvé au moins un mate
+                const allPlayers = [player, ...mates];
                 
+                // Créer une clé unique pour le groupe (épicIds triés)
+                const groupKey = allPlayers.map(p => p.epicId).sort().join('_');
+                
+                // Marquer tous comme traités
+                allPlayers.forEach(p => processedPlayers.add(p.epicId));
+                
+                // Créer l'entrée groupée
                 displayGroups.set(groupKey, {
-                    name: [player.name, matePlayer.name].sort().join(' & '),
-                    points: player.points + matePlayer.points,
-                    kills: player.kills + matePlayer.kills,
-                    wins: player.wins + matePlayer.wins,
-                    games: Math.max(player.games, matePlayer.games)
+                    name: allPlayers.map(p => p.name).sort().join(' & '),
+                    points: allPlayers.reduce((sum, p) => sum + p.points, 0),
+                    kills: allPlayers.reduce((sum, p) => sum + p.kills, 0),
+                    wins: allPlayers.reduce((sum, p) => sum + p.wins, 0),
+                    games: Math.max(...allPlayers.map(p => p.games))
                 });
-                
-                processedPlayers.add(player.epicId);
-                processedPlayers.add(matePlayer.epicId);
-            } else if (!matePlayer) {
-                // Mate non trouvé dans la liste → Afficher le joueur seul
+            } else {
+                // Mate non trouvé → Afficher seul
                 displayGroups.set(player.epicId, {
                     name: player.name,
                     points: player.points,
@@ -295,7 +302,7 @@ function renderLeaderboardTab(content) {
                 processedPlayers.add(player.epicId);
             }
         } else {
-            // Joueur solo (pas de mate) → Afficher seul
+            // Joueur solo → Afficher seul
             displayGroups.set(player.epicId, {
                 name: player.name,
                 points: player.points,
@@ -476,3 +483,4 @@ function renderPrizepoolTab(content) {
         </div>
     `;
 }
+
