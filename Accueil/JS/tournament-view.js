@@ -244,6 +244,7 @@ function getPlayerQualificationStatus(rank, topQualifiers) {
     }
 }
 
+// ✅ FONCTION CORRIGÉE : Regrouper les joueurs selon leur mate actuel
 function renderLeaderboardTab(content) {
     const stageIndex = selectedTournament.stages.findIndex(s => s.name === selectedStage.name);
     const stageId = stageIndex + 1;
@@ -251,7 +252,64 @@ function renderLeaderboardTab(content) {
     const leaderboard = currentLeaderboards[stageId];
     const players = leaderboard ? leaderboard.players : [];
     
-    const sorted = [...players].sort((a, b) => b.points - a.points);
+    console.log('🔍 PLAYERS REÇUS DU BACKEND:', players);
+    
+    // ✅ NOUVELLE LOGIQUE : Regrouper les joueurs selon leur mate actuel
+    const displayGroups = new Map();
+    const processedPlayers = new Set();
+    
+    players.forEach(player => {
+        // Si déjà traité, on passe
+        if (processedPlayers.has(player.epicId)) return;
+        
+        if (player.currentMate) {
+            // Joueur a un mate → Trouver le mate dans la liste
+            const matePlayer = players.find(p => 
+                p.name === player.currentMate || 
+                player.currentMate.split(' & ').includes(p.name)
+            );
+            
+            if (matePlayer && !processedPlayers.has(matePlayer.epicId)) {
+                // Créer une clé unique pour le duo (alphabétique pour éviter doublons)
+                const groupKey = [player.epicId, matePlayer.epicId].sort().join('_');
+                
+                displayGroups.set(groupKey, {
+                    name: [player.name, matePlayer.name].sort().join(' & '),
+                    points: player.points + matePlayer.points,
+                    kills: player.kills + matePlayer.kills,
+                    wins: player.wins + matePlayer.wins,
+                    games: Math.max(player.games, matePlayer.games)
+                });
+                
+                processedPlayers.add(player.epicId);
+                processedPlayers.add(matePlayer.epicId);
+            } else if (!matePlayer) {
+                // Mate non trouvé dans la liste → Afficher le joueur seul
+                displayGroups.set(player.epicId, {
+                    name: player.name,
+                    points: player.points,
+                    kills: player.kills,
+                    wins: player.wins,
+                    games: player.games
+                });
+                processedPlayers.add(player.epicId);
+            }
+        } else {
+            // Joueur solo (pas de mate) → Afficher seul
+            displayGroups.set(player.epicId, {
+                name: player.name,
+                points: player.points,
+                kills: player.kills,
+                wins: player.wins,
+                games: player.games
+            });
+            processedPlayers.add(player.epicId);
+        }
+    });
+    
+    const sorted = Array.from(displayGroups.values()).sort((a, b) => b.points - a.points);
+    
+    console.log('✅ GROUPES AFFICHÉS:', sorted);
     
     content.innerHTML = `
         <div class="leaderboard-wls">
