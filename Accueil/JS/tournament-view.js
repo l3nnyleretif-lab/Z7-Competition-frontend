@@ -279,12 +279,12 @@ function renderLeaderboardTab(content) {
                 );
                 
                 displayGroups.set(groupKey, {
-                    name: allPlayers.map(p => p.name).sort().join(' & '),
-                    points: playerWithMostPoints.points,  // ✅ Points du meilleur joueur
-                    kills: allPlayers.reduce((sum, p) => sum + p.kills, 0),  // ✅ ADDITIONNER les kills
-                    wins: playerWithMostPoints.wins,
-                    games: playerWithMostPoints.games
-                });
+    name: allPlayers.map(p => p.name).sort().join(' & '),
+    points: playerWithMostPoints.points,
+    kills: playerWithMostPoints.kills,  // ✅ Kills d'un seul joueur
+    wins: playerWithMostPoints.wins,
+    games: playerWithMostPoints.games
+});
             } else {
                 displayGroups.set(player.epicId, {
                     name: player.name,
@@ -476,3 +476,4 @@ function renderPrizepoolTab(content) {
         </div>
     `;
 }
+
