@@ -1,4 +1,4 @@
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - ANCIEN PART 1 ========== 
+// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 1 ========== 
 
 let currentEditingTournament = null;
 let creatorStages = [];
@@ -27,7 +27,8 @@ async function initTournamentCreator() {
                 top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
                 top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
             },
-            prizePool: []
+            prizePool: [],
+            allowMateChange: true  // ✅ AJOUT
         }];
     }
     
@@ -284,7 +285,7 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - ANCIEN PART 2 ========== 
+// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 2 ========== 
 
 // ========== GESTION DES ÉTAPES ========== 
 
@@ -332,6 +333,15 @@ function renderStagePanel(index) {
             <div class="form-group">
                 <label class="required">Nombre de qualifiés</label>
                 <input type="number" id="stage-${index + 1}-qualifiers" value="${stage.topQualifiers}" min="1">
+            </div>
+            
+            <!-- ✅ AJOUT : Option changement de mate -->
+            <div class="form-group">
+                <label class="required">Changement de mate autorisé ?</label>
+                <select id="stage-${index + 1}-allowmatechange">
+                    <option value="true" ${stage.allowMateChange !== false ? 'selected' : ''}>Oui - Les joueurs peuvent changer de mate</option>
+                    <option value="false" ${stage.allowMateChange === false ? 'selected' : ''}>Non - Mate verrouillé (premier mate uniquement)</option>
+                </select>
             </div>
             
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;">
@@ -440,7 +450,8 @@ function addNewStage() {
             top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
             top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
         },
-        prizePool: []
+        prizePool: [],
+        allowMateChange: true  // ✅ AJOUT
     });
     currentEditingStage = creatorStages.length - 1;
     window.currentEditingStage = creatorStages.length;
@@ -513,6 +524,10 @@ async function saveTournamentFromCreator() {
         const killPoints = parseInt(document.getElementById(`stage-${stageId}-killpoints`)?.value) || 20;
         const maxKills = parseInt(document.getElementById(`stage-${stageId}-maxkills`)?.value) || 7;
         
+        // ✅ RÉCUPÉRER allowMateChange
+        const allowMateChangeValue = document.getElementById(`stage-${stageId}-allowmatechange`)?.value;
+        const allowMateChange = allowMateChangeValue === 'true';
+        
         const placementPoints = {};
         document.querySelectorAll(`.stage-${stageId}-placement`).forEach(input => {
             const top = parseInt(input.dataset.top);
@@ -539,7 +554,8 @@ async function saveTournamentFromCreator() {
             pointsPerKill: killPoints,
             maxKillPoints: maxKills,
             placementPoints,
-            prizePool
+            prizePool,
+            allowMateChange  // ✅ AJOUT
         };
     });
     
