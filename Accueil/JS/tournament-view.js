@@ -283,13 +283,13 @@ function renderLeaderboardTab(content) {
                 allPlayers.forEach(p => processedPlayers.add(p.epicId));
                 
                 // Créer l'entrée groupée
-                displayGroups.set(groupKey, {
-                    name: allPlayers.map(p => p.name).sort().join(' & '),
-                    points: allPlayers.reduce((sum, p) => sum + p.points, 0),
-                    kills: allPlayers.reduce((sum, p) => sum + p.kills, 0),
-                    wins: allPlayers.reduce((sum, p) => sum + p.wins, 0),
-                    games: Math.max(...allPlayers.map(p => p.games))
-                });
+               displayGroups.set(groupKey, {
+    name: groupName,
+    points: allPlayers[0].points,  // ✅ PRENDRE LES POINTS D'UN SEUL JOUEUR
+    kills: allPlayers[0].kills,
+    wins: allPlayers[0].wins,
+    games: allPlayers[0].games
+});
             } else {
                 // Mate non trouvé → Afficher seul
                 displayGroups.set(player.epicId, {
@@ -483,4 +483,5 @@ function renderPrizepoolTab(content) {
         </div>
     `;
 }
+
 
