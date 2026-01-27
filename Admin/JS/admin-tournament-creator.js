@@ -495,8 +495,11 @@ function loadTemplateIntoStage(templateIndex) {
     const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
     placementsContainer.innerHTML = '';
     
+    // ✅ CORRECTION : Gérer les 2 formats (avec et sans "top")
     Object.entries(template.placementPoints).forEach(([key, points]) => {
+        // Extraire le numéro (que la clé soit "1" ou "top1")
         const topNum = key.toString().replace('top', '');
+        
         const div = document.createElement('div');
         div.className = 'placement-item';
         div.innerHTML = `
@@ -736,3 +739,4 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
+
