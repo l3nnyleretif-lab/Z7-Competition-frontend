@@ -254,7 +254,7 @@ function renderLeaderboardTab(content) {
     
     console.log('🔍 PLAYERS REÇUS DU BACKEND:', players);
     
-    // ✅ NOUVELLE LOGIQUE : Vérifier que les 2 joueurs ont bien le même mate
+    // ✅ Regrouper les joueurs selon leur mate actuel
     const displayGroups = new Map();
     const processedPlayers = new Set();
     
@@ -262,28 +262,17 @@ function renderLeaderboardTab(content) {
         if (processedPlayers.has(player.epicId)) return;
         
         if (player.currentMate) {
-            // Chercher les mates
             const mateNames = player.currentMate.split(' & ');
-            const validMates = [];
+            const mates = mateNames.map(name => 
+                players.find(p => p.name === name)
+            ).filter(Boolean);
             
-            // ✅ VÉRIFIER que chaque mate a aussi ce joueur comme mate
-            mateNames.forEach(mateName => {
-                const mate = players.find(p => 
-                    p.name === mateName && 
-                    p.currentMate && 
-                    p.currentMate.split(' & ').includes(player.name)  // ✅ VÉRIFICATION BIDIRECTIONNELLE
-                );
-                if (mate) validMates.push(mate);
-            });
-            
-            if (validMates.length > 0) {
-                // ✅ DUO VALIDE : Les 2 joueurs ont le même mate
-                const allPlayers = [player, ...validMates];
+            if (mates.length > 0) {
+                const allPlayers = [player, ...mates];
                 const groupKey = allPlayers.map(p => p.epicId).sort().join('_');
                 
                 allPlayers.forEach(p => processedPlayers.add(p.epicId));
                 
-                // Prendre le joueur avec le PLUS de points
                 const playerWithMostPoints = allPlayers.reduce((max, p) => 
                     p.points > max.points ? p : max
                 );
@@ -296,7 +285,6 @@ function renderLeaderboardTab(content) {
                     games: playerWithMostPoints.games
                 });
             } else {
-                // ✅ Mate pas trouvé ou pas de relation bidirectionnelle → SOLO
                 displayGroups.set(player.epicId, {
                     name: player.name,
                     points: player.points,
@@ -307,7 +295,6 @@ function renderLeaderboardTab(content) {
                 processedPlayers.add(player.epicId);
             }
         } else {
-            // ✅ Joueur SOLO
             displayGroups.set(player.epicId, {
                 name: player.name,
                 points: player.points,
@@ -377,36 +364,6 @@ function renderLeaderboardTab(content) {
                     }).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px;color:#888;">Aucun joueur pour le moment</td></tr>'}
                 </tbody>
             </table>
-        </div>
-    `;
-}
-function renderScoringTab(content) {
-    content.innerHTML = `
-        <div class="scoring-wls">
-            <div class="scoring-mode-toggle">
-                <button class="toggle-btn active" data-mode="echelon" onclick="toggleScoringMode('echelon')">
-                    Par Échelon
-                </button>
-                <button class="toggle-btn" data-mode="cumulative" onclick="toggleScoringMode('cumulative')">
-                    Cumulatif
-                </button>
-            </div>
-
-            <div class="scoring-section">
-                <div class="scoring-header">
-                    <div>
-                        <span class="scoring-title">💀 Éliminations</span>
-                        <span class="scoring-info">Max: ${selectedStage.maxKillPoints} Kill</span>
-                    </div>
-                    <div class="scoring-value">+${selectedStage.pointsPerKill} points</div>
-                </div>
-            </div>
-            
-            <div class="scoring-section">
-                <div class="placement-grid" id="placement-grid">
-                    ${renderPlacementPoints('echelon')}
-                </div>
-            </div>
         </div>
     `;
 }
@@ -487,5 +444,6 @@ function renderPrizepoolTab(content) {
         </div>
     `;
 }
+
 
 
