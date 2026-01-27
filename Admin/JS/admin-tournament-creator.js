@@ -1,4 +1,4 @@
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 1 ========== 
+// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS ========== 
 
 let currentEditingTournament = null;
 let creatorStages = [];
@@ -481,28 +481,27 @@ function loadTemplateIntoStage(templateIndex) {
     
     if (!template) {
         console.error('Template not found:', templateIndex);
+        alert('❌ Template introuvable !');
         return;
     }
     
-    console.log('Loading template:', template.name);
+    console.log('🔄 Loading template:', template.name);
     
-    // Charger les points par kill
     const killPointsInput = document.getElementById(`stage-${stageId}-killpoints`);
     const maxKillsInput = document.getElementById(`stage-${stageId}-maxkills`);
     
     if (killPointsInput) killPointsInput.value = template.killPoints;
     if (maxKillsInput) maxKillsInput.value = template.maxKills;
     
-    // Charger les points de placement
     const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
     if (!placementsContainer) {
-        console.error('Placements container not found');
+        console.error('❌ Placements container not found');
+        alert('❌ Erreur lors du chargement du template');
         return;
     }
     
     placementsContainer.innerHTML = '';
     
-    // Gérer les 2 formats
     Object.entries(template.placementPoints).forEach(([key, points]) => {
         const topNum = key.toString().replace('top', '');
         
@@ -516,6 +515,7 @@ function loadTemplateIntoStage(templateIndex) {
         placementsContainer.appendChild(div);
     });
     
+    console.log('✅ Template loaded successfully!');
     alert('✅ Template chargé avec succès !');
 }
 
@@ -746,4 +746,3 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
-
