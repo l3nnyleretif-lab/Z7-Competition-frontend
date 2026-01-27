@@ -9,12 +9,10 @@ async function initTournamentCreator() {
     const container = document.getElementById('create-tournament-form');
     container.innerHTML = await renderCreatorHTML();
     
-    // Si on édite un tournoi existant, charger ses données
     if (currentEditingTournament) {
         creatorStages = JSON.parse(JSON.stringify(currentEditingTournament.stages));
         loadTournamentData();
     } else {
-        // Ajouter une étape par défaut pour un nouveau tournoi
         creatorStages = [{
             id: 1,
             name: 'Étape 1',
@@ -37,7 +35,6 @@ async function initTournamentCreator() {
     switchCreatorTab('infos');
 }
 
-// Charger les données d'un tournoi en édition
 function loadTournamentData() {
     if (!currentEditingTournament) return;
     
@@ -71,7 +68,6 @@ function loadTournamentData() {
     }, 100);
 }
 
-// Fonction pour charger les dates des étapes après leur rendu
 function loadStagesDates() {
     setTimeout(() => {
         creatorStages.forEach((stage, index) => {
@@ -105,7 +101,6 @@ function loadStagesDates() {
     }, 200);
 }
 
-// Générer le HTML du créateur
 async function renderCreatorHTML() {
     let gameTypes = [];
     let gameModes = [];
@@ -183,7 +178,7 @@ async function renderCreatorHTML() {
                     <div class="form-group">
                         <label class="required">Mode de jeu</label>
                         <select id="creator-mode">
-                            ${gameModes.map(mode => `<option value="${mode.name}">${mode.name}</option>`).join('')}
+                            ${gameModes.map(mode => `<option value="${type.name}">${mode.name}</option>`).join('')}
                         </select>
                     </div>
                     <div class="form-group">
@@ -292,7 +287,6 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
-// ========== SAUVEGARDER L'ÉTAPE ACTUELLE ========== 
 function saveCurrentStageData() {
     const index = currentEditingStage;
     const stageId = index + 1;
@@ -338,8 +332,6 @@ function saveCurrentStageData() {
     });
     creatorStages[index].prizePool = prizePool;
 }
-
-// ========== GESTION DES ÉTAPES ========== 
 
 function renderStagesTabs() {
     const container = document.getElementById('stages-tabs');
@@ -403,7 +395,7 @@ function renderStagePanel(index) {
                     
                     <div class="form-group" style="margin-bottom:20px;">
                         <label>Charger un template</label>
-                        <select onchange="if(this.value) loadTemplateIntoStage(this.value);">
+                        <select onchange="if(this.value !== '') loadTemplateIntoStage(this.value)">
                             <option value="">-- Choisir un template --</option>
                             ${pointsTemplates.map((t, i) => `<option value="${i}">${t.name}</option>`).join('')}
                         </select>
@@ -457,7 +449,7 @@ function renderStagePanel(index) {
 }
 
 function addStagePlacement(stageId) {
-    const container = document.getElementById(`stage-${stageId}-placements`);  // ✅ Ajout de (
+    const container = document.getElementById(`stage-${stageId}-placements`);
     const currentPlacements = container.querySelectorAll('.placement-item');
     const nextTop = currentPlacements.length + 1;
     
@@ -472,7 +464,7 @@ function addStagePlacement(stageId) {
 }
 
 function addStagePrize(stageId) {
-    const container = document.getElementById(`stage-${stageId}-prizes`);  // ✅ Ajout de (
+    const container = document.getElementById(`stage-${stageId}-prizes`);
     const div = document.createElement('div');
     div.className = 'prize-item-form';
     div.innerHTML = `
@@ -487,17 +479,31 @@ function loadTemplateIntoStage(templateIndex) {
     const stageId = window.currentEditingStage || 1;
     const template = pointsTemplates[parseInt(templateIndex)];
     
-    if (!template) return;
+    if (!template) {
+        console.error('Template not found:', templateIndex);
+        return;
+    }
     
-    document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;  // ✅ Ajout de (
-    document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;  // ✅ Ajout de (
+    console.log('Loading template:', template.name);
     
-    const placementsContainer = document.getElementById(`stage-${stageId}-placements`);  // ✅ Ajout de (
+    // Charger les points par kill
+    const killPointsInput = document.getElementById(`stage-${stageId}-killpoints`);
+    const maxKillsInput = document.getElementById(`stage-${stageId}-maxkills`);
+    
+    if (killPointsInput) killPointsInput.value = template.killPoints;
+    if (maxKillsInput) maxKillsInput.value = template.maxKills;
+    
+    // Charger les points de placement
+    const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
+    if (!placementsContainer) {
+        console.error('Placements container not found');
+        return;
+    }
+    
     placementsContainer.innerHTML = '';
     
-    // ✅ CORRECTION : Gérer les 2 formats (avec et sans "top")
+    // Gérer les 2 formats
     Object.entries(template.placementPoints).forEach(([key, points]) => {
-        // Extraire le numéro (que la clé soit "1" ou "top1")
         const topNum = key.toString().replace('top', '');
         
         const div = document.createElement('div');
@@ -510,7 +516,7 @@ function loadTemplateIntoStage(templateIndex) {
         placementsContainer.appendChild(div);
     });
     
-    alert('✅ Template chargé avec succès !');  // ✅ Confirmation visuelle
+    alert('✅ Template chargé avec succès !');
 }
 
 function addNewStage() {
@@ -573,7 +579,6 @@ function deleteCurrentStage() {
     }
 }
 
-// ========== SAUVEGARDE TOURNOI VIA API ========== 
 async function saveTournamentFromCreator() {
     saveCurrentStageData();
     
@@ -741,5 +746,3 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
-
-
