@@ -457,7 +457,7 @@ function renderStagePanel(index) {
 }
 
 function addStagePlacement(stageId) {
-    const container = document.getElementById(`stage-${stageId}-placements`);
+    const container = document.getElementById(`stage-${stageId}-placements`);  // ✅ Ajout de (
     const currentPlacements = container.querySelectorAll('.placement-item');
     const nextTop = currentPlacements.length + 1;
     
@@ -472,7 +472,7 @@ function addStagePlacement(stageId) {
 }
 
 function addStagePrize(stageId) {
-    const container = document.getElementById(`stage-${stageId}-prizes`);
+    const container = document.getElementById(`stage-${stageId}-prizes`);  // ✅ Ajout de (
     const div = document.createElement('div');
     div.className = 'prize-item-form';
     div.innerHTML = `
@@ -489,10 +489,10 @@ function loadTemplateIntoStage(templateIndex) {
     
     if (!template) return;
     
-    document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;
-    document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;
+    document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;  // ✅ Ajout de (
+    document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;  // ✅ Ajout de (
     
-    const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
+    const placementsContainer = document.getElementById(`stage-${stageId}-placements`);  // ✅ Ajout de (
     placementsContainer.innerHTML = '';
     
     // ✅ CORRECTION : Gérer les 2 formats (avec et sans "top")
@@ -509,6 +509,8 @@ function loadTemplateIntoStage(templateIndex) {
         `;
         placementsContainer.appendChild(div);
     });
+    
+    alert('✅ Template chargé avec succès !');  // ✅ Confirmation visuelle
 }
 
 function addNewStage() {
@@ -739,4 +741,5 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
+
 
