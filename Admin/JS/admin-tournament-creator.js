@@ -178,7 +178,7 @@ async function renderCreatorHTML() {
                     <div class="form-group">
                         <label class="required">Mode de jeu</label>
                         <select id="creator-mode">
-                            ${gameModes.map(mode => `<option value="${type.name}">${mode.name}</option>`).join('')}
+                            ${gameModes.map(mode => `<option value="${mode.name}">${mode.name}</option>`).join('')}
                         </select>
                     </div>
                     <div class="form-group">
@@ -746,3 +746,4 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
+
