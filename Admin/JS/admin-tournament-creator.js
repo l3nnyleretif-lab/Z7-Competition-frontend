@@ -18,8 +18,8 @@ async function initTournamentCreator() {
         creatorStages = [{
             id: 1,
             name: 'Étape 1',
-            startDate: '',
-            endDate: '',
+            startDate: null,
+            endDate: null,
             topQualifiers: 100,
             pointsPerKill: 20,
             maxKillPoints: 7,
@@ -28,7 +28,7 @@ async function initTournamentCreator() {
                 top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
             },
             prizePool: [],
-            allowMateChange: true  // ✅ AJOUT
+            allowMateChange: true
         }];
     }
     
@@ -232,7 +232,6 @@ function switchCreatorTab(tabId) {
     document.querySelectorAll('.creator-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     
-    // ✅ Utiliser window.event
     if (window.event && window.event.target) {
         window.event.target.classList.add('active');
     }
@@ -285,10 +284,6 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 2 ========== 
-
-// ========== GESTION DES ÉTAPES ========== 
-
 function renderStagesTabs() {
     const container = document.getElementById('stages-tabs');
     container.innerHTML = creatorStages.map((stage, index) => `
@@ -322,11 +317,11 @@ function renderStagePanel(index) {
             <div class="date-grid">
                 <div class="form-group">
                     <label class="required">Date de début</label>
-                    <input type="date" id="stage-${index + 1}-start" value="${stage.startDate}">
+                    <input type="date" id="stage-${index + 1}-start" value="${stage.startDate || ''}">
                 </div>
                 <div class="form-group">
                     <label class="required">Date de fin</label>
-                    <input type="date" id="stage-${index + 1}-end" value="${stage.endDate}">
+                    <input type="date" id="stage-${index + 1}-end" value="${stage.endDate || ''}">
                 </div>
             </div>
             
@@ -335,7 +330,6 @@ function renderStagePanel(index) {
                 <input type="number" id="stage-${index + 1}-qualifiers" value="${stage.topQualifiers}" min="1">
             </div>
             
-            <!-- ✅ AJOUT : Option changement de mate -->
             <div class="form-group">
                 <label class="required">Changement de mate autorisé ?</label>
                 <select id="stage-${index + 1}-allowmatechange">
@@ -441,8 +435,8 @@ function addNewStage() {
     creatorStages.push({
         id: newId,
         name: `Étape ${newId}`,
-        startDate: '',
-        endDate: '',
+        startDate: null,
+        endDate: null,
         topQualifiers: 100,
         pointsPerKill: 20,
         maxKillPoints: 7,
@@ -451,7 +445,7 @@ function addNewStage() {
             top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
         },
         prizePool: [],
-        allowMateChange: true  // ✅ AJOUT
+        allowMateChange: true
     });
     currentEditingStage = creatorStages.length - 1;
     window.currentEditingStage = creatorStages.length;
@@ -464,6 +458,8 @@ function duplicateCurrentStage() {
     const currentStage = JSON.parse(JSON.stringify(creatorStages[currentEditingStage]));
     currentStage.id = creatorStages.length + 1;
     currentStage.name = currentStage.name + ' (Copie)';
+    currentStage.startDate = null;
+    currentStage.endDate = null;
     creatorStages.push(currentStage);
     currentEditingStage = creatorStages.length - 1;
     window.currentEditingStage = creatorStages.length;
@@ -490,7 +486,6 @@ function deleteCurrentStage() {
     }
 }
 
-// ========== SAUVEGARDE TOURNOI VIA API ========== 
 async function saveTournamentFromCreator() {
     const name = document.getElementById('creator-name').value.trim();
     const twitch = document.getElementById('creator-twitch').value.trim();
@@ -518,13 +513,13 @@ async function saveTournamentFromCreator() {
     
     const stages = creatorStages.map((stage, index) => {
         const stageId = index + 1;
-        const startDate = document.getElementById(`stage-${stageId}-start`)?.value || '';
-        const endDate = document.getElementById(`stage-${stageId}-end`)?.value || '';
+        const startDateValue = document.getElementById(`stage-${stageId}-start`)?.value;
+        const endDateValue = document.getElementById(`stage-${stageId}-end`)?.value;
+        const startDate = startDateValue && startDateValue.trim() !== '' ? startDateValue : null;
+        const endDate = endDateValue && endDateValue.trim() !== '' ? endDateValue : null;
         const qualifiers = parseInt(document.getElementById(`stage-${stageId}-qualifiers`)?.value) || 100;
         const killPoints = parseInt(document.getElementById(`stage-${stageId}-killpoints`)?.value) || 20;
         const maxKills = parseInt(document.getElementById(`stage-${stageId}-maxkills`)?.value) || 7;
-        
-        // ✅ RÉCUPÉRER allowMateChange
         const allowMateChangeValue = document.getElementById(`stage-${stageId}-allowmatechange`)?.value;
         const allowMateChange = allowMateChangeValue === 'true';
         
@@ -555,12 +550,12 @@ async function saveTournamentFromCreator() {
             maxKillPoints: maxKills,
             placementPoints,
             prizePool,
-            allowMateChange  // ✅ AJOUT
+            allowMateChange
         };
     });
     
-    const dates = stages.map(s => s.startDate).filter(d => d);
-    const endDates = stages.map(s => s.endDate).filter(d => d);
+    const validStartDates = stages.map(s => s.startDate).filter(d => d !== null);
+    const validEndDates = stages.map(s => s.endDate).filter(d => d !== null);
     
     const tournamentData = {
         name,
@@ -568,8 +563,8 @@ async function saveTournamentFromCreator() {
         streamerTwitch: twitch,
         description,
         reward,
-        startDate: dates.length > 0 ? dates.sort()[0] : new Date().toISOString(),
-        endDate: endDates.length > 0 ? endDates.sort().reverse()[0] : new Date().toISOString(),
+        startDate: validStartDates.length > 0 ? validStartDates.sort()[0] : null,
+        endDate: validEndDates.length > 0 ? validEndDates.sort().reverse()[0] : null,
         isOpen,
         region,
         gameType,
