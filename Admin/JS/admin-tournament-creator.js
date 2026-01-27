@@ -80,17 +80,25 @@ function loadStagesDates() {
             const startInput = document.getElementById(`stage-${stageId}-start`);
             const endInput = document.getElementById(`stage-${stageId}-end`);
             
-            if (startInput && stage.startDate) {
-                const startDate = new Date(stage.startDate);
-                if (!isNaN(startDate.getTime())) {
-                    startInput.value = startDate.toISOString().split('T')[0];
+            if (startInput && stage.startDate && stage.startDate !== null) {
+                try {
+                    const startDate = new Date(stage.startDate);
+                    if (!isNaN(startDate.getTime())) {
+                        startInput.value = startDate.toISOString().split('T')[0];
+                    }
+                } catch (e) {
+                    console.error('Erreur parsing startDate:', e);
                 }
             }
             
-            if (endInput && stage.endDate) {
-                const endDate = new Date(stage.endDate);
-                if (!isNaN(endDate.getTime())) {
-                    endInput.value = endDate.toISOString().split('T')[0];
+            if (endInput && stage.endDate && stage.endDate !== null) {
+                try {
+                    const endDate = new Date(stage.endDate);
+                    if (!isNaN(endDate.getTime())) {
+                        endInput.value = endDate.toISOString().split('T')[0];
+                    }
+                } catch (e) {
+                    console.error('Erreur parsing endDate:', e);
                 }
             }
         });
