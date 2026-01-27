@@ -1,4 +1,4 @@
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 1 ========== 
+// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS ========== 
 
 let currentEditingTournament = null;
 let creatorStages = [];
@@ -9,12 +9,10 @@ async function initTournamentCreator() {
     const container = document.getElementById('create-tournament-form');
     container.innerHTML = await renderCreatorHTML();
     
-    // Si on édite un tournoi existant, charger ses données
     if (currentEditingTournament) {
         creatorStages = JSON.parse(JSON.stringify(currentEditingTournament.stages));
         loadTournamentData();
     } else {
-        // Ajouter une étape par défaut pour un nouveau tournoi
         creatorStages = [{
             id: 1,
             name: 'Étape 1',
@@ -24,8 +22,8 @@ async function initTournamentCreator() {
             pointsPerKill: 20,
             maxKillPoints: 7,
             placementPoints: {
-                top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
-                top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
+                1: 30, 2: 27, 3: 25, 4: 23, 5: 21,
+                6: 19, 7: 17, 8: 15, 9: 13, 10: 11
             },
             prizePool: [],
             allowMateChange: true
@@ -37,7 +35,6 @@ async function initTournamentCreator() {
     switchCreatorTab('infos');
 }
 
-// Charger les données d'un tournoi en édition
 function loadTournamentData() {
     if (!currentEditingTournament) return;
     
@@ -71,7 +68,6 @@ function loadTournamentData() {
     }, 100);
 }
 
-// Fonction pour charger les dates des étapes après leur rendu
 function loadStagesDates() {
     setTimeout(() => {
         creatorStages.forEach((stage, index) => {
@@ -105,7 +101,6 @@ function loadStagesDates() {
     }, 200);
 }
 
-// Générer le HTML du créateur
 async function renderCreatorHTML() {
     let gameTypes = [];
     let gameModes = [];
@@ -292,6 +287,62 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
+// ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT DE CHANGER
+function saveCurrentStageData() {
+    const index = currentEditingStage;
+    const stageId = index + 1;
+    
+    // Sauvegarder le nom
+    const nameInput = document.getElementById(`stage-${stageId}-name`);
+    if (nameInput) {
+        creatorStages[index].name = nameInput.value;
+    }
+    
+    // Sauvegarder les dates
+    const startInput = document.getElementById(`stage-${stageId}-start`);
+    const endInput = document.getElementById(`stage-${stageId}-end`);
+    if (startInput) creatorStages[index].startDate = startInput.value || null;
+    if (endInput) creatorStages[index].endDate = endInput.value || null;
+    
+    // Sauvegarder les qualifiés
+    const qualifiersInput = document.getElementById(`stage-${stageId}-qualifiers`);
+    if (qualifiersInput) creatorStages[index].topQualifiers = parseInt(qualifiersInput.value) || 100;
+    
+    // Sauvegarder allowMateChange
+    const allowMateChangeInput = document.getElementById(`stage-${stageId}-allowmatechange`);
+    if (allowMateChangeInput) creatorStages[index].allowMateChange = allowMateChangeInput.value === 'true';
+    
+    // Sauvegarder les points par kill et max kills
+    const killPointsInput = document.getElementById(`stage-${stageId}-killpoints`);
+    const maxKillsInput = document.getElementById(`stage-${stageId}-maxkills`);
+    if (killPointsInput) creatorStages[index].pointsPerKill = parseInt(killPointsInput.value) || 20;
+    if (maxKillsInput) creatorStages[index].maxKillPoints = parseInt(maxKillsInput.value) || 7;
+    
+    // Sauvegarder les points de placement
+    const placementPoints = {};
+    document.querySelectorAll(`.stage-${stageId}-placement`).forEach(input => {
+        const top = parseInt(input.dataset.top);
+        const points = parseInt(input.value) || 0;
+        placementPoints[top] = points;
+    });
+    creatorStages[index].placementPoints = placementPoints;
+    
+    // Sauvegarder le prize pool
+    const prizePool = [];
+    const positions = document.querySelectorAll(`.stage-${stageId}-prize-position`);
+    const rewards = document.querySelectorAll(`.stage-${stageId}-prize-reward`);
+    positions.forEach((posInput, i) => {
+        const position = posInput.value.trim();
+        const reward = rewards[i].value.trim();
+        if (position && reward) {
+            prizePool.push({ position, reward });
+        }
+    });
+    creatorStages[index].prizePool = prizePool;
+    
+    console.log(`✅ Étape ${stageId} sauvegardée:`, creatorStages[index]);
+}
+
 function renderStagesTabs() {
     const container = document.getElementById('stages-tabs');
     container.innerHTML = creatorStages.map((stage, index) => `
@@ -302,13 +353,13 @@ function renderStagesTabs() {
 }
 
 function switchStage(index) {
+    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT DE CHANGER
+    saveCurrentStageData();
+    
     currentEditingStage = index;
     window.currentEditingStage = index + 1;
     renderStagesTabs();
     renderStagePanel(index);
-    if (currentEditingTournament) {
-        loadStagesDates();
-    }
 }
 
 function renderStagePanel(index) {
@@ -319,7 +370,7 @@ function renderStagePanel(index) {
         <div class="stage-panel active">
             <div class="form-group">
                 <label class="required">Nom de l'étape</label>
-                <input type="text" id="stage-${index + 1}-name" value="${stage.name}" onchange="updateStageName(${index})" placeholder="Ex: Qualif 1, Finale">
+                <input type="text" id="stage-${index + 1}-name" value="${stage.name}" placeholder="Ex: Qualif 1, Finale">
             </div>
             
             <div class="date-grid">
@@ -352,7 +403,7 @@ function renderStagePanel(index) {
                     
                     <div class="form-group" style="margin-bottom:20px;">
                         <label>Charger un template</label>
-                        <select onchange="if(this.value) loadTemplateIntoStage(this.value);">
+                        <select onchange="if(this.value) loadTemplateIntoStage(this.value, ${index + 1});">
                             <option value="">-- Choisir un template --</option>
                             ${pointsTemplates.map((t, i) => `<option value="${i}">${t.name}</option>`).join('')}
                         </select>
@@ -373,7 +424,7 @@ function renderStagePanel(index) {
                         <label>Points de placement</label>
                         <div id="stage-${index + 1}-placements" class="placement-list">
                             ${Object.entries(stage.placementPoints).map(([key, pts]) => {
-                                const topNum = key.toString().replace('top', '');
+                                const topNum = key;
                                 return `
                                     <div class="placement-item">
                                         <span style="color:#fff;font-weight:700;">Top ${topNum}</span>
@@ -438,7 +489,36 @@ function addStagePrize(stageId) {
     container.appendChild(div);
 }
 
+function loadTemplateIntoStage(templateIndex, stageId) {
+    const template = pointsTemplates[parseInt(templateIndex)];
+    
+    if (!template) return;
+    
+    document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;
+    document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;
+    
+    const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
+    placementsContainer.innerHTML = '';
+    
+    Object.entries(template.placementPoints).forEach(([key, points]) => {
+        const topNum = key.toString().replace('top', '');
+        const div = document.createElement('div');
+        div.className = 'placement-item';
+        div.innerHTML = `
+            <span style="color:#fff;font-weight:700;">Top ${topNum}</span>
+            <input type="number" class="stage-${stageId}-placement" data-top="${topNum}" value="${points}" min="0">
+            <button class="btn-remove" onclick="this.parentElement.remove()">🗑️</button>
+        `;
+        placementsContainer.appendChild(div);
+    });
+    
+    alert(`✅ Template "${template.name}" chargé pour cette étape !`);
+}
+
 function addNewStage() {
+    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE
+    saveCurrentStageData();
+    
     const newId = creatorStages.length + 1;
     creatorStages.push({
         id: newId,
@@ -449,8 +529,8 @@ function addNewStage() {
         pointsPerKill: 20,
         maxKillPoints: 7,
         placementPoints: {
-            top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
-            top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
+            1: 30, 2: 27, 3: 25, 4: 23, 5: 21,
+            6: 19, 7: 17, 8: 15, 9: 13, 10: 11
         },
         prizePool: [],
         allowMateChange: true
@@ -463,6 +543,9 @@ function addNewStage() {
 }
 
 function duplicateCurrentStage() {
+    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE
+    saveCurrentStageData();
+    
     const currentStage = JSON.parse(JSON.stringify(creatorStages[currentEditingStage]));
     currentStage.id = creatorStages.length + 1;
     currentStage.name = currentStage.name + ' (Copie)';
@@ -495,6 +578,9 @@ function deleteCurrentStage() {
 }
 
 async function saveTournamentFromCreator() {
+    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT D'ENVOYER
+    saveCurrentStageData();
+    
     const name = document.getElementById('creator-name').value.trim();
     const twitch = document.getElementById('creator-twitch').value.trim();
     const descriptionEditor = document.getElementById('creator-description');
@@ -519,48 +605,17 @@ async function saveTournamentFromCreator() {
         return;
     }
     
-    const stages = creatorStages.map((stage, index) => {
-        const stageId = index + 1;
-        const startDateValue = document.getElementById(`stage-${stageId}-start`)?.value;
-        const endDateValue = document.getElementById(`stage-${stageId}-end`)?.value;
-        const startDate = startDateValue && startDateValue.trim() !== '' ? startDateValue : null;
-        const endDate = endDateValue && endDateValue.trim() !== '' ? endDateValue : null;
-        const qualifiers = parseInt(document.getElementById(`stage-${stageId}-qualifiers`)?.value) || 100;
-        const killPoints = parseInt(document.getElementById(`stage-${stageId}-killpoints`)?.value) || 20;
-        const maxKills = parseInt(document.getElementById(`stage-${stageId}-maxkills`)?.value) || 7;
-        const allowMateChangeValue = document.getElementById(`stage-${stageId}-allowmatechange`)?.value;
-        const allowMateChange = allowMateChangeValue === 'true';
-        
-        const placementPoints = {};
-        document.querySelectorAll(`.stage-${stageId}-placement`).forEach(input => {
-            const top = parseInt(input.dataset.top);
-            const points = parseInt(input.value) || 0;
-            placementPoints[top] = points;
-        });
-        
-        const prizePool = [];
-        const positions = document.querySelectorAll(`.stage-${stageId}-prize-position`);
-        const rewards = document.querySelectorAll(`.stage-${stageId}-prize-reward`);
-        positions.forEach((posInput, i) => {
-            const position = posInput.value.trim();
-            const rewardValue = rewards[i].value.trim();
-            if (position && rewardValue) {
-                prizePool.push({ position, reward: rewardValue });
-            }
-        });
-        
-        return {
-            name: stage.name,
-            startDate,
-            endDate,
-            topQualifiers: qualifiers,
-            pointsPerKill: killPoints,
-            maxKillPoints: maxKills,
-            placementPoints,
-            prizePool,
-            allowMateChange
-        };
-    });
+    const stages = creatorStages.map(stage => ({
+        name: stage.name,
+        startDate: stage.startDate,
+        endDate: stage.endDate,
+        topQualifiers: stage.topQualifiers,
+        pointsPerKill: stage.pointsPerKill,
+        maxKillPoints: stage.maxKillPoints,
+        placementPoints: stage.placementPoints,
+        prizePool: stage.prizePool,
+        allowMateChange: stage.allowMateChange
+    }));
     
     const validStartDates = stages.map(s => s.startDate).filter(d => d !== null);
     const validEndDates = stages.map(s => s.endDate).filter(d => d !== null);
@@ -581,6 +636,8 @@ async function saveTournamentFromCreator() {
         customColor: color,
         stages
     };
+    
+    console.log('📤 Données envoyées:', tournamentData);
     
     try {
         let response;
@@ -615,6 +672,8 @@ function cancelCreation() {
 }
 
 function previewTournament() {
+    saveCurrentStageData();
+    
     const name = document.getElementById('creator-name').value.trim();
     const descriptionEditor = document.getElementById('creator-description');
     const description = descriptionEditor ? descriptionEditor.innerHTML : '';
@@ -629,15 +688,6 @@ function previewTournament() {
         alert('❌ Veuillez au moins renseigner le nom du tournoi');
         return;
     }
-    
-    const stages = creatorStages.map((stage, index) => {
-        const stageId = index + 1;
-        return {
-            name: stage.name,
-            startDate: document.getElementById(`stage-${stageId}-start`)?.value || '',
-            endDate: document.getElementById(`stage-${stageId}-end`)?.value || ''
-        };
-    });
     
     const previewLink = `${window.location.origin}/index.html?tournament=preview`;
     
@@ -674,7 +724,7 @@ function previewTournament() {
             <div style="background:#000;border:1px solid #fff;padding:20px;">
                 <h3 style="color:${color};font-size:20px;margin-bottom:20px;text-transform:uppercase;">📅 Étapes du tournoi</h3>
                 <div style="display:flex;gap:15px;flex-wrap:wrap;">
-                    ${stages.map(stage => `
+                    ${creatorStages.map(stage => `
                         <div style="background:#1a1a1a;border:1px solid ${color};padding:15px;min-width:200px;">
                             <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:8px;">${stage.name}</div>
                             <div style="font-size:12px;color:#aaa;">${stage.startDate ? new Date(stage.startDate).toLocaleDateString('fr-FR') : 'Date non définie'}</div>
