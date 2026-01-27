@@ -492,27 +492,32 @@ function addStagePrize(stageId) {
 function loadTemplateIntoStage(templateIndex, stageId) {
     const template = pointsTemplates[parseInt(templateIndex)];
     
-    if (!template) return;
+    if (!template) {
+        alert('❌ Template introuvable');
+        return;
+    }
     
+    // Charger les points par kill et max kills
     document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;
     document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;
     
+    // Vider et recharger les placements
     const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
     placementsContainer.innerHTML = '';
     
+    // Ajouter les nouveaux placements
     Object.entries(template.placementPoints).forEach(([key, points]) => {
-        const topNum = key.toString().replace('top', '');
         const div = document.createElement('div');
         div.className = 'placement-item';
         div.innerHTML = `
-            <span style="color:#fff;font-weight:700;">Top ${topNum}</span>
-            <input type="number" class="stage-${stageId}-placement" data-top="${topNum}" value="${points}" min="0">
+            <span style="color:#fff;font-weight:700;">Top ${key}</span>
+            <input type="number" class="stage-${stageId}-placement" data-top="${key}" value="${points}" min="0">
             <button class="btn-remove" onclick="this.parentElement.remove()">🗑️</button>
         `;
         placementsContainer.appendChild(div);
     });
     
-    alert(`✅ Template "${template.name}" chargé pour cette étape !`);
+    alert(`✅ Template "${template.name}" chargé !`);
 }
 
 function addNewStage() {
@@ -747,3 +752,4 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
+
