@@ -1,4 +1,4 @@
-// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS ========== 
+// ========== NOUVEAU SYSTÈME DE CRÉATION DE TOURNOIS - PART 1 ========== 
 
 let currentEditingTournament = null;
 let creatorStages = [];
@@ -9,10 +9,12 @@ async function initTournamentCreator() {
     const container = document.getElementById('create-tournament-form');
     container.innerHTML = await renderCreatorHTML();
     
+    // Si on édite un tournoi existant, charger ses données
     if (currentEditingTournament) {
         creatorStages = JSON.parse(JSON.stringify(currentEditingTournament.stages));
         loadTournamentData();
     } else {
+        // Ajouter une étape par défaut pour un nouveau tournoi
         creatorStages = [{
             id: 1,
             name: 'Étape 1',
@@ -22,8 +24,8 @@ async function initTournamentCreator() {
             pointsPerKill: 20,
             maxKillPoints: 7,
             placementPoints: {
-                1: 30, 2: 27, 3: 25, 4: 23, 5: 21,
-                6: 19, 7: 17, 8: 15, 9: 13, 10: 11
+                top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
+                top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
             },
             prizePool: [],
             allowMateChange: true
@@ -35,6 +37,7 @@ async function initTournamentCreator() {
     switchCreatorTab('infos');
 }
 
+// Charger les données d'un tournoi en édition
 function loadTournamentData() {
     if (!currentEditingTournament) return;
     
@@ -68,6 +71,7 @@ function loadTournamentData() {
     }, 100);
 }
 
+// Fonction pour charger les dates des étapes après leur rendu
 function loadStagesDates() {
     setTimeout(() => {
         creatorStages.forEach((stage, index) => {
@@ -101,6 +105,7 @@ function loadStagesDates() {
     }, 200);
 }
 
+// Générer le HTML du créateur
 async function renderCreatorHTML() {
     let gameTypes = [];
     let gameModes = [];
@@ -287,6 +292,7 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
+// ========== SAUVEGARDER L'ÉTAPE ACTUELLE ========== 
 function saveCurrentStageData() {
     const index = currentEditingStage;
     const stageId = index + 1;
@@ -316,7 +322,7 @@ function saveCurrentStageData() {
     document.querySelectorAll(`.stage-${stageId}-placement`).forEach(input => {
         const top = parseInt(input.dataset.top);
         const points = parseInt(input.value) || 0;
-        placementPoints[top] = points;
+        placementPoints[`top${top}`] = points;
     });
     creatorStages[index].placementPoints = placementPoints;
     
@@ -332,6 +338,8 @@ function saveCurrentStageData() {
     });
     creatorStages[index].prizePool = prizePool;
 }
+
+// ========== GESTION DES ÉTAPES ========== 
 
 function renderStagesTabs() {
     const container = document.getElementById('stages-tabs');
@@ -349,6 +357,9 @@ function switchStage(index) {
     window.currentEditingStage = index + 1;
     renderStagesTabs();
     renderStagePanel(index);
+    if (currentEditingTournament) {
+        loadStagesDates();
+    }
 }
 
 function renderStagePanel(index) {
@@ -413,7 +424,7 @@ function renderStagePanel(index) {
                         <label>Points de placement</label>
                         <div id="stage-${index + 1}-placements" class="placement-list">
                             ${Object.entries(stage.placementPoints).map(([key, pts]) => {
-                                const topNum = key;
+                                const topNum = key.toString().replace('top', '');
                                 return `
                                     <div class="placement-item">
                                         <span style="color:#fff;font-weight:700;">Top ${topNum}</span>
@@ -510,8 +521,8 @@ function addNewStage() {
         pointsPerKill: 20,
         maxKillPoints: 7,
         placementPoints: {
-            1: 30, 2: 27, 3: 25, 4: 23, 5: 21,
-            6: 19, 7: 17, 8: 15, 9: 13, 10: 11
+            top1: 30, top2: 27, top3: 25, top4: 23, top5: 21,
+            top6: 19, top7: 17, top8: 15, top9: 13, top10: 11
         },
         prizePool: [],
         allowMateChange: true
@@ -557,6 +568,7 @@ function deleteCurrentStage() {
     }
 }
 
+// ========== SAUVEGARDE TOURNOI VIA API ========== 
 async function saveTournamentFromCreator() {
     saveCurrentStageData();
     
@@ -586,8 +598,8 @@ async function saveTournamentFromCreator() {
     
     const stages = creatorStages.map(stage => ({
         name: stage.name,
-        startDate: stage.startDate,
-        endDate: stage.endDate,
+        startDate: stage.startDate || null,
+        endDate: stage.endDate || null,
         topQualifiers: stage.topQualifiers,
         pointsPerKill: stage.pointsPerKill,
         maxKillPoints: stage.maxKillPoints,
