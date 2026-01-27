@@ -287,38 +287,31 @@ function updateColorPreview() {
     document.getElementById('color-preview').style.background = color;
 }
 
-// ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT DE CHANGER
 function saveCurrentStageData() {
     const index = currentEditingStage;
     const stageId = index + 1;
     
-    // Sauvegarder le nom
     const nameInput = document.getElementById(`stage-${stageId}-name`);
     if (nameInput) {
         creatorStages[index].name = nameInput.value;
     }
     
-    // Sauvegarder les dates
     const startInput = document.getElementById(`stage-${stageId}-start`);
     const endInput = document.getElementById(`stage-${stageId}-end`);
     if (startInput) creatorStages[index].startDate = startInput.value || null;
     if (endInput) creatorStages[index].endDate = endInput.value || null;
     
-    // Sauvegarder les qualifiés
     const qualifiersInput = document.getElementById(`stage-${stageId}-qualifiers`);
     if (qualifiersInput) creatorStages[index].topQualifiers = parseInt(qualifiersInput.value) || 100;
     
-    // Sauvegarder allowMateChange
     const allowMateChangeInput = document.getElementById(`stage-${stageId}-allowmatechange`);
     if (allowMateChangeInput) creatorStages[index].allowMateChange = allowMateChangeInput.value === 'true';
     
-    // Sauvegarder les points par kill et max kills
     const killPointsInput = document.getElementById(`stage-${stageId}-killpoints`);
     const maxKillsInput = document.getElementById(`stage-${stageId}-maxkills`);
     if (killPointsInput) creatorStages[index].pointsPerKill = parseInt(killPointsInput.value) || 20;
     if (maxKillsInput) creatorStages[index].maxKillPoints = parseInt(maxKillsInput.value) || 7;
     
-    // Sauvegarder les points de placement
     const placementPoints = {};
     document.querySelectorAll(`.stage-${stageId}-placement`).forEach(input => {
         const top = parseInt(input.dataset.top);
@@ -327,7 +320,6 @@ function saveCurrentStageData() {
     });
     creatorStages[index].placementPoints = placementPoints;
     
-    // Sauvegarder le prize pool
     const prizePool = [];
     const positions = document.querySelectorAll(`.stage-${stageId}-prize-position`);
     const rewards = document.querySelectorAll(`.stage-${stageId}-prize-reward`);
@@ -339,8 +331,6 @@ function saveCurrentStageData() {
         }
     });
     creatorStages[index].prizePool = prizePool;
-    
-    console.log(`✅ Étape ${stageId} sauvegardée:`, creatorStages[index]);
 }
 
 function renderStagesTabs() {
@@ -353,7 +343,6 @@ function renderStagesTabs() {
 }
 
 function switchStage(index) {
-    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT DE CHANGER
     saveCurrentStageData();
     
     currentEditingStage = index;
@@ -403,7 +392,7 @@ function renderStagePanel(index) {
                     
                     <div class="form-group" style="margin-bottom:20px;">
                         <label>Charger un template</label>
-                        <select onchange="if(this.value) loadTemplateIntoStage(this.value, ${index + 1});">
+                        <select onchange="if(this.value) loadTemplateIntoStage(this.value);">
                             <option value="">-- Choisir un template --</option>
                             ${pointsTemplates.map((t, i) => `<option value="${i}">${t.name}</option>`).join('')}
                         </select>
@@ -456,12 +445,6 @@ function renderStagePanel(index) {
     `;
 }
 
-function updateStageName(index) {
-    const newName = document.getElementById(`stage-${index + 1}-name`).value;
-    creatorStages[index].name = newName;
-    renderStagesTabs();
-}
-
 function addStagePlacement(stageId) {
     const container = document.getElementById(`stage-${stageId}-placements`);
     const currentPlacements = container.querySelectorAll('.placement-item');
@@ -489,39 +472,32 @@ function addStagePrize(stageId) {
     container.appendChild(div);
 }
 
-function loadTemplateIntoStage(templateIndex, stageId) {
+function loadTemplateIntoStage(templateIndex) {
+    const stageId = window.currentEditingStage || 1;
     const template = pointsTemplates[parseInt(templateIndex)];
     
-    if (!template) {
-        alert('❌ Template introuvable');
-        return;
-    }
+    if (!template) return;
     
-    // Charger les points par kill et max kills
     document.getElementById(`stage-${stageId}-killpoints`).value = template.killPoints;
     document.getElementById(`stage-${stageId}-maxkills`).value = template.maxKills;
     
-    // Vider et recharger les placements
     const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
     placementsContainer.innerHTML = '';
     
-    // Ajouter les nouveaux placements
     Object.entries(template.placementPoints).forEach(([key, points]) => {
+        const topNum = key.toString().replace('top', '');
         const div = document.createElement('div');
         div.className = 'placement-item';
         div.innerHTML = `
-            <span style="color:#fff;font-weight:700;">Top ${key}</span>
-            <input type="number" class="stage-${stageId}-placement" data-top="${key}" value="${points}" min="0">
+            <span style="color:#fff;font-weight:700;">Top ${topNum}</span>
+            <input type="number" class="stage-${stageId}-placement" data-top="${topNum}" value="${points}" min="0">
             <button class="btn-remove" onclick="this.parentElement.remove()">🗑️</button>
         `;
         placementsContainer.appendChild(div);
     });
-    
-    alert(`✅ Template "${template.name}" chargé !`);
 }
 
 function addNewStage() {
-    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE
     saveCurrentStageData();
     
     const newId = creatorStages.length + 1;
@@ -548,7 +524,6 @@ function addNewStage() {
 }
 
 function duplicateCurrentStage() {
-    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE
     saveCurrentStageData();
     
     const currentStage = JSON.parse(JSON.stringify(creatorStages[currentEditingStage]));
@@ -583,7 +558,6 @@ function deleteCurrentStage() {
 }
 
 async function saveTournamentFromCreator() {
-    // ✅ SAUVEGARDER L'ÉTAPE ACTUELLE AVANT D'ENVOYER
     saveCurrentStageData();
     
     const name = document.getElementById('creator-name').value.trim();
@@ -641,8 +615,6 @@ async function saveTournamentFromCreator() {
         customColor: color,
         stages
     };
-    
-    console.log('📤 Données envoyées:', tournamentData);
     
     try {
         let response;
@@ -752,4 +724,3 @@ function closePreviewModal() {
     const modal = document.getElementById('preview-modal');
     if (modal) modal.remove();
 }
-
