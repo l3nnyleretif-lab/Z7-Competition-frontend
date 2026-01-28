@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="Accueil/CSS/tournaments.css">
     <link rel="stylesheet" href="Accueil/CSS/tournament-details.css">
     <link rel="stylesheet" href="Accueil/CSS/login.css">
-    <link rel="stylesheet" href="Accueil/CSS/stripe-modal.css"><!-- NOUVEAU CSS STRIPE -->
 </head>
 <body>
     <!-- Navigation -->
@@ -86,7 +85,7 @@
     <div id="page-login" class="page">
         <div class="login-page-container">
             <div class="login-sections">
-                <!-- ========== NOUVELLE SECTION GAUCHE AVEC STRIPE ========== -->
+                <!-- Section Gauche - Clé API -->
                 <div class="login-section-left">
                     <h2 class="section-title">J'ai déjà une clé API</h2>
                     <p class="section-description">
@@ -112,25 +111,11 @@
                         <span>OU</span>
                     </div>
                     
-                    <!-- GROS BOUTON CRÉER UNE CLÉ API -->
-                    <button class="btn-create-api-key" onclick="openStripePlansModal()">
-                        🎮 Créer une clé API pour streamer
-                    </button>
-                    
-                    <div class="section-divider">
-                        <span>OU</span>
-                    </div>
-                    
-                    <!-- PETIT BOUTON DEMANDE GRATUITE -->
-                    <button class="btn-request-free-key" onclick="showFreeApiRequestForm()">
-                        📝 Demander une clé API gratuitement
-                    </button>
-                    
-                    <!-- FORMULAIRE DE DEMANDE (MASQUÉ PAR DÉFAUT) -->
-                    <div class="new-user-form" id="free-request-form" style="display:none;margin-top:30px;">
-                        <h3>Demander une clé API gratuite</h3>
+                    <!-- Formulaire demande clé API -->
+                    <div class="new-user-form">
+                        <h3>Je suis nouveau</h3>
                         <p>
-                            Remplissez ce formulaire et nous vous recontacterons dans les 24 heures.
+                            Remplissez ce formulaire et nous vous recontacterons dans les 24 heures avec votre clé et la marche à suivre.
                         </p>
                         
                         <div id="request-success" class="success-message"></div>
@@ -177,10 +162,6 @@
                             
                             <button type="submit" class="btn-submit-request">
                                 Envoyer ma demande
-                            </button>
-                            
-                            <button type="button" class="btn-secondary" onclick="hideFreeRequestForm()" style="margin-top:10px;width:100%;padding:10px;background:#555;border:none;color:#fff;cursor:pointer;">
-                                Annuler
                             </button>
                             
                             <p class="privacy-notice">
@@ -234,75 +215,6 @@
         </div>
     </div>
 
-    <!-- ========== POP-UP FORFAITS STRIPE ========== -->
-    <div id="stripe-plans-modal" class="stripe-modal-overlay">
-        <div class="stripe-modal-content">
-            <button class="stripe-modal-close" onclick="closeStripePlansModal()">×</button>
-            
-            <div class="stripe-modal-header">
-                <h2>🎮 Créer une clé API</h2>
-                <p>Choisissez le forfait qui correspond à vos besoins</p>
-            </div>
-            
-            <div class="plans-container">
-                <!-- FORFAIT MENSUEL -->
-                <div class="plan-card">
-                    <div class="plan-name">Mensuel</div>
-                    <div class="plan-price">5€<span>/mois</span></div>
-                    <div class="plan-period">Facturation mensuelle</div>
-                    
-                    <div class="plan-features">
-                        <div class="plan-feature">Accès illimité au panel admin</div>
-                        <div class="plan-feature">Création de tournois illimitée</div>
-                        <div class="plan-feature">Gestion des classements</div>
-                        <div class="plan-feature">Intégration Twitch</div>
-                        <div class="plan-feature">Support technique prioritaire</div>
-                        <div class="plan-feature">Annulation à tout moment</div>
-                    </div>
-                    
-                    <button class="plan-button" onclick="createStripeCheckout('monthly')">
-                        Choisir Mensuel
-                    </button>
-                </div>
-                
-                <!-- FORFAIT ANNUEL (RECOMMANDÉ) -->
-                <div class="plan-card recommended">
-                    <div class="plan-badge">🔥 Économisez 20%</div>
-                    <div class="plan-name">Annuel</div>
-                    <div class="plan-price">48€<span>/an</span></div>
-                    <div class="plan-period">Soit 4€/mois - Payé en une fois</div>
-                    <div class="plan-savings">💰 Économisez 12€ par an</div>
-                    
-                    <div class="plan-features">
-                        <div class="plan-feature">Accès illimité au panel admin</div>
-                        <div class="plan-feature">Création de tournois illimitée</div>
-                        <div class="plan-feature">Gestion des classements</div>
-                        <div class="plan-feature">Intégration Twitch</div>
-                        <div class="plan-feature">Support technique prioritaire</div>
-                        <div class="plan-feature">Badge "Partenaire Premium"</div>
-                    </div>
-                    
-                    <button class="plan-button" onclick="createStripeCheckout('annual')">
-                        Choisir Annuel
-                    </button>
-                </div>
-            </div>
-            
-            <div class="stripe-footer">
-                <p>
-                    💳 Paiement 100% sécurisé par Stripe<br>
-                    📧 Vous recevrez votre clé API par email immédiatement après le paiement<br>
-                    🔒 Vos données bancaires ne sont jamais stockées sur nos serveurs
-                </p>
-                <p style="margin-top:15px;">
-                    <a href="javascript:void(0)" onclick="showFreeApiRequestForm()">
-                        Vous préférez demander une clé API gratuite ?
-                    </a>
-                </p>
-            </div>
-        </div>
-    </div>
-
     <!-- JS séparés - ORDRE IMPORTANT -->
     <script src="Accueil/JS/api.js"></script>
     <script src="Accueil/JS/data.js"></script>
@@ -311,7 +223,6 @@
     <script src="Accueil/JS/tournaments.js"></script>
     <script src="Accueil/JS/tournament-view.js"></script>
     <script src="Accueil/JS/login.js"></script>
-    <script src="Accueil/JS/stripe-client.js"></script><!-- NOUVEAU JS STRIPE -->
     
     <script>
         // Toggle visibilité de la clé API
@@ -327,20 +238,7 @@
                 button.textContent = '👁️';
             }
         }
-        
-        // Afficher le formulaire de demande gratuite
-        function showFreeApiRequestForm() {
-            closeStripePlansModal(); // Fermer le modal si ouvert
-            document.getElementById('free-request-form').style.display = 'block';
-            document.getElementById('free-request-form').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Masquer le formulaire de demande gratuite
-        function hideFreeRequestForm() {
-            document.getElementById('free-request-form').style.display = 'none';
-        }
     </script>
 </body>
 
 </html>
-
