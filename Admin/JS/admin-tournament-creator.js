@@ -475,22 +475,34 @@ function addStagePrize(stageId) {
     container.appendChild(div);
 }
 
+// ✅ FONCTION CORRIGÉE AVEC LES BONS NOMS DE PROPRIÉTÉS
 function loadTemplateIntoStage(templateIndex) {
     const stageId = window.currentEditingStage || 1;
     const template = pointsTemplates[parseInt(templateIndex)];
     
+    console.log('🔍 Template Index:', templateIndex);
+    console.log('🔍 Template:', template);
+    
     if (!template) {
-        console.error('Template not found:', templateIndex);
+        console.error('❌ Template not found:', templateIndex);
         alert('❌ Template introuvable !');
         return;
     }
     
-    console.log('🔄 Loading template:', template.name);
+    // ✅ UTILISER template.placements (pas template.placementPoints)
+    if (!template.placements) {
+        console.error('❌ Template has no placements:', template);
+        alert('❌ Template invalide : pas de points de placement !');
+        return;
+    }
     
+    console.log('🔍 Placements:', template.placements);
+    
+    // ✅ CHARGER template.pointsPerKill et template.maxKills
     const killPointsInput = document.getElementById(`stage-${stageId}-killpoints`);
     const maxKillsInput = document.getElementById(`stage-${stageId}-maxkills`);
     
-    if (killPointsInput) killPointsInput.value = template.killPoints;
+    if (killPointsInput) killPointsInput.value = template.pointsPerKill;
     if (maxKillsInput) maxKillsInput.value = template.maxKills;
     
     const placementsContainer = document.getElementById(`stage-${stageId}-placements`);
@@ -502,7 +514,8 @@ function loadTemplateIntoStage(templateIndex) {
     
     placementsContainer.innerHTML = '';
     
-    Object.entries(template.placementPoints).forEach(([key, points]) => {
+    // ✅ UTILISER template.placements (pas template.placementPoints)
+    Object.entries(template.placements).forEach(([key, points]) => {
         const topNum = key.toString().replace('top', '');
         
         const div = document.createElement('div');
