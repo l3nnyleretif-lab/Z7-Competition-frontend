@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z7 Competition - Tournois Fortnite</title>
+    <link rel="icon" type="image/x-icon" href="Image/LOGO-Z7-esports.ico">
+
+    <meta property="og:image" content="https://z7competition.com/Image/LOGO Z7 ESPORTS Social.png">
+    
+    <!-- CSS séparés -->
+    <link rel="stylesheet" href="Accueil/CSS/base.css">
+    <link rel="stylesheet" href="Accueil/CSS/navigation.css">
+    <link rel="stylesheet" href="Accueil/CSS/filters.css">
+    <link rel="stylesheet" href="Accueil/CSS/tournaments.css">
+    <link rel="stylesheet" href="Accueil/CSS/tournament-details.css">
+    <link rel="stylesheet" href="Accueil/CSS/login.css">
+    <link rel="stylesheet" href="Accueil/CSS/stripe-modal.css"><!-- NOUVEAU CSS STRIPE -->
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <h1 class="nav-title" onclick="showPage('home')">
+            <img src="Image/LOGO Z7 esports.png" alt="Z7 Logo" style="height: 50px; vertical-align: middle; margin-right: 15px;">
+            Z7 COMPETITION
+            </h1>
+            <div class="nav-buttons">
+                <button class="nav-btn" data-text="ACCUEIL" onclick="showPage('home')"></button>
+                <button class="nav-btn" data-text="COMPTE" onclick="showPage('login')"></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Accueil -->
+    <div id="page-home" class="page active">
+        <div class="container">
+            <!-- Filtres -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>🌍 Région</label>
+                    <select id="filter-region" onchange="applyFilters()">
+                        <option value="">Toutes les régions</option>
+                        <option value="Europe">Europe</option>
+                        <option value="NA East">NA East</option>
+                        <option value="NA West">NA West</option>
+                        <option value="Middle East">Middle East</option>
+                        <option value="Asia">Asia</option>
+                        <option value="OCE">OCE</option>
+                        <option value="Brazil">Brazil</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>🎮 Mode de Jeu</label>
+                    <select id="filter-mode" onchange="applyFilters()">
+                        <option value="">Tous les modes</option>
+                        <option value="Solo">Solo</option>
+                        <option value="Duo">Duo</option>
+                        <option value="Trio">Trio</option>
+                        <option value="Squad">Squad</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tournois à venir -->
+            <div class="tournaments-section">
+                <div class="section-separator"></div>
+                <div class="section-header-box">
+                    <h2 class="section-title-new">Bientôt</h2>
+                </div>
+                <div id="upcoming-tournaments"></div>
+            </div>
+
+            <!-- Tournois terminés -->
+            <div class="tournaments-section">
+                <div class="section-separator"></div>
+                <div class="section-header-box finished">
+                    <h2 class="section-title-new finished">Terminé</h2>
+                </div>
+                <div id="finished-tournaments"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Connexion / Compte -->
+    <div id="page-login" class="page">
+        <div class="login-page-container">
+            <div class="login-sections">
+                <!-- ========== NOUVELLE SECTION GAUCHE AVEC STRIPE ========== -->
+                <div class="login-section-left">
+                    <h2 class="section-title">J'ai déjà une clé API</h2>
+                    <p class="section-description">
+                        Accédez directement au panneau streamer pour créer/administrer vos tournois, gérer les replays et le classement.
+                    </p>
+                    
+                    <div class="api-key-form">
+                        <div class="form-group-login" style="position:relative;">
+                            <input type="password" id="api-key-input" placeholder="Entrez votre clé API" style="padding-right:45px;">
+                            <button type="button" onclick="toggleApiKeyVisibility()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;font-size:20px;cursor:pointer;color:#fff;padding:5px;">
+                                👁️
+                            </button>
+                        </div>
+                        <button class="btn-api-access" onclick="accessWithApiKey()">
+                            Accéder au panneau streamer →
+                        </button>
+                        <p class="help-text">
+                            Besoin d'aide ? <a href="#" onclick="alert('Rejoignez notre Discord pour obtenir de l\'aide')">Rejoignez le Discord</a>
+                        </p>
+                    </div>
+                    
+                    <div class="section-divider">
+                        <span>OU</span>
+                    </div>
+                    
+                    <!-- GROS BOUTON CRÉER UNE CLÉ API -->
+                    <button class="btn-create-api-key" onclick="openStripePlansModal()">
+                        🎮 Créer une clé API pour streamer
+                    </button>
+                    
+                    <div class="section-divider">
+                        <span>OU</span>
+                    </div>
+                    
+                    <!-- PETIT BOUTON DEMANDE GRATUITE -->
+                    <button class="btn-request-free-key" onclick="showFreeApiRequestForm()">
+                        📝 Demander une clé API gratuitement
+                    </button>
+                    
+                    <!-- FORMULAIRE DE DEMANDE (MASQUÉ PAR DÉFAUT) -->
+                    <div class="new-user-form" id="free-request-form" style="display:none;margin-top:30px;">
+                        <h3>Demander une clé API gratuite</h3>
+                        <p>
+                            Remplissez ce formulaire et nous vous recontacterons dans les 24 heures.
+                        </p>
+                        
+                        <div id="request-success" class="success-message"></div>
+                        
+                        <form id="api-request-form" onsubmit="submitApiRequest(event)">
+                            <div class="form-group-login">
+                                <label class="required">Nom / Pseudo *</label>
+                                <input type="text" id="request-name" placeholder="Ex. Z7Master" required>
+                            </div>
+                            
+                            <div class="form-group-login">
+                                <label class="required">Adresse e-mail *</label>
+                                <input type="email" id="request-email" placeholder="vous@example.com" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group-login">
+                                    <label>TikTok (URL)</label>
+                                    <input type="url" id="request-tiktok" placeholder="https://www.tiktok.com/@votre_compte">
+                                </div>
+                                
+                                <div class="form-group-login">
+                                    <label>Twitch (URL)</label>
+                                    <input type="url" id="request-twitch" placeholder="https://twitch.tv/votre_chaine">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group-login">
+                                    <label class="required">Tournois organisés / mois *</label>
+                                    <input type="number" id="request-tournaments" placeholder="Ex. 4" min="0" required>
+                                </div>
+                                
+                                <div class="form-group-login">
+                                    <label class="required">Téléphone *</label>
+                                    <input type="tel" id="request-phone" placeholder="+33 6 12 34 56 78" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-login">
+                                <label>Message (optionnel)</label>
+                                <textarea id="request-message" placeholder="Présentez votre communauté, vos formats, vos projets..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-submit-request">
+                                Envoyer ma demande
+                            </button>
+                            
+                            <button type="button" class="btn-secondary" onclick="hideFreeRequestForm()" style="margin-top:10px;width:100%;padding:10px;background:#555;border:none;color:#fff;cursor:pointer;">
+                                Annuler
+                            </button>
+                            
+                            <p class="privacy-notice">
+                                Vos informations ne seront utilisées que pour vous recontacter au sujet du partenariat.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Section Droite - Connexion -->
+                <div class="login-section-right">
+                    <div class="login-form">
+                        <h3>Connexion</h3>
+                        
+                        <div id="login-error" class="error-message"></div>
+                        
+                        <form id="classic-login-form" onsubmit="classicLogin(event)">
+                            <div class="form-group-login">
+                                <label class="required">Email</label>
+                                <input type="email" id="login-email" placeholder="votre@email.com" required>
+                            </div>
+                            
+                            <div class="form-group-login">
+                                <label class="required">Mot de passe</label>
+                                <input type="password" id="login-password" placeholder="Votre mot de passe" required>
+                            </div>
+                            
+                            <button type="submit" class="btn-login">
+                                Se connecter
+                            </button>
+                        </form>
+                        
+                        <div class="login-divider">
+                            <span>Pas encore de compte ?</span>
+                        </div>
+                        
+                        <button class="btn-signup" onclick="showSignup()">
+                            Créer un compte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Détail Tournoi -->
+    <div id="page-tournament" class="page">
+        <div class="container">
+            <button onclick="showPage('home')" class="btn-back">← Retour</button>
+            <div id="tournament-details"></div>
+        </div>
+    </div>
+
+    <!-- ========== POP-UP FORFAITS STRIPE ========== -->
+    <div id="stripe-plans-modal" class="stripe-modal-overlay">
+        <div class="stripe-modal-content">
+            <button class="stripe-modal-close" onclick="closeStripePlansModal()">×</button>
+            
+            <div class="stripe-modal-header">
+                <h2>🎮 Créer une clé API</h2>
+                <p>Choisissez le forfait qui correspond à vos besoins</p>
+            </div>
+            
+            <div class="plans-container">
+                <!-- FORFAIT MENSUEL -->
+                <div class="plan-card">
+                    <div class="plan-name">Mensuel</div>
+                    <div class="plan-price">5€<span>/mois</span></div>
+                    <div class="plan-period">Facturation mensuelle</div>
+                    
+                    <div class="plan-features">
+                        <div class="plan-feature">Accès illimité au panel admin</div>
+                        <div class="plan-feature">Création de tournois illimitée</div>
+                        <div class="plan-feature">Gestion des classements</div>
+                        <div class="plan-feature">Intégration Twitch</div>
+                        <div class="plan-feature">Support technique prioritaire</div>
+                        <div class="plan-feature">Annulation à tout moment</div>
+                    </div>
+                    
+                    <button class="plan-button" onclick="createStripeCheckout('monthly')">
+                        Choisir Mensuel
+                    </button>
+                </div>
+                
+                <!-- FORFAIT ANNUEL (RECOMMANDÉ) -->
+                <div class="plan-card recommended">
+                    <div class="plan-badge">🔥 Économisez 20%</div>
+                    <div class="plan-name">Annuel</div>
+                    <div class="plan-price">48€<span>/an</span></div>
+                    <div class="plan-period">Soit 4€/mois - Payé en une fois</div>
+                    <div class="plan-savings">💰 Économisez 12€ par an</div>
+                    
+                    <div class="plan-features">
+                        <div class="plan-feature">Accès illimité au panel admin</div>
+                        <div class="plan-feature">Création de tournois illimitée</div>
+                        <div class="plan-feature">Gestion des classements</div>
+                        <div class="plan-feature">Intégration Twitch</div>
+                        <div class="plan-feature">Support technique prioritaire</div>
+                        <div class="plan-feature">Badge "Partenaire Premium"</div>
+                    </div>
+                    
+                    <button class="plan-button" onclick="createStripeCheckout('annual')">
+                        Choisir Annuel
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stripe-footer">
+                <p>
+                    💳 Paiement 100% sécurisé par Stripe<br>
+                    📧 Vous recevrez votre clé API par email immédiatement après le paiement<br>
+                    🔒 Vos données bancaires ne sont jamais stockées sur nos serveurs
+                </p>
+                <p style="margin-top:15px;">
+                    <a href="javascript:void(0)" onclick="showFreeApiRequestForm()">
+                        Vous préférez demander une clé API gratuite ?
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS séparés - ORDRE IMPORTANT -->
+    <script src="Accueil/JS/api.js"></script>
+    <script src="Accueil/JS/data.js"></script>
+    <script src="Accueil/JS/twitch-player.js"></script>
+    <script src="Accueil/JS/main.js"></script>
+    <script src="Accueil/JS/tournaments.js"></script>
+    <script src="Accueil/JS/tournament-view.js"></script>
+    <script src="Accueil/JS/login.js"></script>
+    <script src="Accueil/JS/stripe-client.js"></script><!-- NOUVEAU JS STRIPE -->
+    
+    <script>
+        // Toggle visibilité de la clé API
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('api-key-input');
+            const button = event.target;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        // Afficher le formulaire de demande gratuite
+        function showFreeApiRequestForm() {
+            closeStripePlansModal(); // Fermer le modal si ouvert
+            document.getElementById('free-request-form').style.display = 'block';
+            document.getElementById('free-request-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Masquer le formulaire de demande gratuite
+        function hideFreeRequestForm() {
+            document.getElementById('free-request-form').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

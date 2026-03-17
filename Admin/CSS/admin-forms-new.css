@@ -1,0 +1,553 @@
+/* ========== NOUVEAU SYSTÈME DE CRÉATION TOURNOIS ========== */
+
+/* Container principal */
+.tournament-creator {
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+/* Onglets de navigation */
+.creator-tabs {
+    display: flex;
+    background: #000000;
+    border-bottom: 1px solid #ffffff;
+    overflow-x: auto;
+}
+
+.creator-tab {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.creator-tab:last-child {
+    border-right: none;
+}
+
+.creator-tab:hover {
+    background: rgba(51, 198, 255, 0.1);
+}
+
+.creator-tab.active {
+    background: #33C6FF;
+    color: #000000;
+}
+
+/* Contenu des onglets */
+.creator-content {
+    padding: 25px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Groupes de champs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group label.required::after {
+    content: ' *';
+    color: #FF6B35;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: #1a1a1a;
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #33C6FF;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* ========== STYLE DES INPUTS DATE - ICÔNE CALENDRIER BLANC ========== */
+input[type="date"] {
+    color: #ffffff;
+    background: #1a1a1a;
+    border: 1px solid #ffffff;
+    padding: 10px 12px;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+input[type="date"]:focus {
+    outline: none;
+    border-color: #33C6FF;
+}
+
+/* Icône calendrier en blanc pour Chrome/Edge/Safari */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 1;
+}
+
+/* Firefox */
+input[type="date"]::-moz-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Input time aussi */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* ========== ÉDITEUR DE DESCRIPTION - VISUALISATION DIRECTE ========== */
+.description-editor-full {
+    width: 100%;
+    min-height: 250px;
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #fff;
+    color: #fff;
+    outline: none;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.description-editor-full:focus {
+    border-color: #33C6FF;
+}
+
+/* Barre d'outils d'édition */
+.description-toolbar {
+    display: flex;
+    gap: 5px;
+    padding: 8px;
+    background: #000000;
+    border: 1px solid #ffffff;
+    border-bottom: none;
+    flex-wrap: wrap;
+}
+
+.description-toolbar button {
+    padding: 6px 10px;
+    background: #1a1a1a;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+    min-width: 35px;
+}
+
+.description-toolbar button:hover {
+    background: #33C6FF;
+    color: #000;
+}
+
+.description-toolbar button:active {
+    transform: scale(0.95);
+}
+
+/* Toggle pour inscription */
+.toggle-group {
+    display: flex;
+    gap: 0;
+    border: 1px solid #ffffff;
+    width: fit-content;
+}
+
+.toggle-option {
+    padding: 10px 20px;
+    background: #000000;
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-right: 1px solid #ffffff;
+}
+
+.toggle-option:last-child {
+    border-right: none;
+}
+
+.toggle-option:hover {
+    background: rgba(51, 198, 255, 0.1);
+}
+
+.toggle-option.active {
+    background: #33C6FF;
+    color: #000000;
+}
+
+/* Configuration des étapes */
+.stages-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stage-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.stage-tab {
+    padding: 8px 15px;
+    background: #000000;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.stage-tab:hover {
+    border-color: #33C6FF;
+}
+
+.stage-tab.active {
+    background: #33C6FF;
+    color: #000000;
+    border-color: #33C6FF;
+}
+
+.stage-panel {
+    display: none;
+    background: #000000;
+    border: 1px solid #ffffff;
+    padding: 20px;
+}
+
+.stage-panel.active {
+    display: block;
+}
+
+.stage-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+/* Grid pour dates */
+.date-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* ========== SYSTÈME DE POINTS AVEC SCROLL ========== */
+.points-system {
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #33C6FF;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.points-system h4 {
+    color: #33C6FF;
+    font-size: 15px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    background: #1a1a1a;
+    padding-bottom: 10px;
+    z-index: 1;
+}
+
+.points-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.placement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.placement-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 35px;
+    gap: 8px;
+    align-items: center;
+}
+
+.placement-item input {
+    margin: 0;
+}
+
+.btn-remove {
+    padding: 6px;
+    background: #dc3545;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+}
+
+/* ========== PRIZE POOL AVEC SCROLL ========== */
+.prize-pool-section {
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #FF6B35;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.prize-pool-section h4 {
+    color: #FF6B35;
+    font-size: 15px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    background: #1a1a1a;
+    padding-bottom: 10px;
+    z-index: 1;
+}
+
+.prize-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prize-item-form {
+    display: grid;
+    grid-template-columns: 120px 1fr 35px;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ========== TEMPLATES DE POINTS ========== */
+.templates-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.template-card {
+    background: #000000;
+    border: 1px solid #ffffff;
+    padding: 15px;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    min-height: auto;
+}
+
+.template-card:hover {
+    border-color: #33C6FF;
+    transform: translateY(-2px);
+}
+
+.template-card h4 {
+    color: #33C6FF;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.template-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+
+.template-actions button {
+    flex: 1;
+    min-width: 100px;
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 11px;
+}
+
+/* Personnalisation visuelle */
+.visual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.image-upload-zone {
+    border: 1px dashed #ffffff;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.image-upload-zone:hover {
+    border-color: #33C6FF;
+    background: rgba(51, 198, 255, 0.05);
+}
+
+.image-preview {
+    margin-top: 12px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 250px;
+    border: 1px solid #ffffff;
+}
+
+.color-picker-zone {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.color-preview {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #ffffff;
+    transition: all 0.3s;
+}
+
+/* Boutons d'action */
+.creator-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 15px 25px;
+    background: #000000;
+    border-top: 1px solid #ffffff;
+    flex-wrap: wrap;
+}
+
+.btn-preview {
+    padding: 10px 25px;
+    background: #8B5CF6;
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-preview:hover {
+    background: #7C3AED;
+    transform: translateY(-2px);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .date-grid,
+    .points-grid,
+    .visual-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stage-panel > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .templates-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .creator-tabs {
+        flex-direction: column;
+    }
+    
+    .creator-tab {
+        border-right: none;
+        border-bottom: 1px solid #ffffff;
+    }
+    
+    .creator-content {
+        padding: 15px;
+    }
+    
+    .template-actions {
+        flex-direction: column;
+    }
+    
+    .template-actions button {
+        width: 100%;
+    }
+    
+    .creator-actions {
+        flex-direction: column;
+    }
+    
+    .creator-actions button {
+        width: 100%;
+    }
+    
+    .points-system,
+    .prize-pool-section {
+        padding: 12px;
+    }
+}
