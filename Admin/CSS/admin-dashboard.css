@@ -1,0 +1,264 @@
+/* ========== DASHBOARD COMPACT - TOUT CENTRÉ ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #000000;
+    padding: 20px;
+    border-radius: 0;
+    border: 1px solid #ffffff;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    border-color: #33C6FF;
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: #33C6FF;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ========== CHART CONTAINER - TOUT CENTRÉ ========== */
+.stats-chart-container {
+    background: #000000;
+    padding: 25px;
+    border-radius: 0;
+    border: 1px solid #ffffff;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stats-chart-container h3 {
+    color: #33C6FF;
+    font-size: 18px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Chart centré */
+#playersChart {
+    width: 280px !important;
+    height: 280px !important;
+    margin-bottom: 20px;
+}
+
+/* Légende en ligne (côte à côte) sous le chart */
+#chart-legend {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 15px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 0;
+    min-width: 200px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 0;
+    flex-shrink: 0;
+}
+
+.legend-text {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 700;
+}
+
+.legend-value {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 900;
+    margin-top: 3px;
+}
+
+/* ========== TOTAL JOUEURS COMPACT ========== */
+.total-players-display {
+    text-align: center;
+    padding: 10px 25px;
+    background: #1a1a1a;
+    border: 1px solid #33C6FF;
+    border-radius: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.total-number {
+    font-size: 32px;
+    font-weight: 900;
+    color: #33C6FF;
+    line-height: 1;
+}
+
+.total-label {
+    font-size: 12px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+/* ========== RESPONSIVE DASHBOARD MOBILE UNIQUEMENT ========== */
+@media (max-width: 768px) {
+    /* Stats cards plus compactes */
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px !important;
+    }
+    
+    .stat-card {
+        padding: 12px !important;
+    }
+    
+    .stat-icon {
+        font-size: 24px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .stat-number {
+        font-size: 28px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .stat-label {
+        font-size: 10px !important;
+    }
+    
+    /* TOUTES LES DIV AVEC BACKGROUND #000 DANS LE DASHBOARD */
+    #admin-dashboard > div[style] {
+        padding: 12px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #admin-dashboard > div[style] h3 {
+        font-size: 13px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #admin-dashboard > div[style] p {
+        font-size: 9px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    /* Chart container plus compact */
+    #admin-dashboard > div[style] > div[style*="max-width"] {
+        height: 180px !important;
+        max-height: 180px !important;
+    }
+    
+    /* Canvas chart plus petit */
+    #participants-chart {
+        max-height: 180px !important;
+    }
+    
+    /* Input clé API compact */
+    #api-key-display {
+        padding: 5px !important;
+        font-size: 10px !important;
+    }
+    
+    /* Boutons compacts */
+    #admin-dashboard button {
+        padding: 5px 10px !important;
+        font-size: 10px !important;
+    }
+    
+    /* Div des boutons (flex) */
+    #admin-dashboard > div[style] > div[style*="display:flex"] {
+        gap: 5px !important;
+    }
+    
+    .stats-chart-container {
+        padding: 12px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .stats-chart-container h3 {
+        font-size: 14px !important;
+        margin-bottom: 12px !important;
+    }
+    
+    #playersChart {
+        width: 180px !important;
+        height: 180px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    #chart-legend {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+    
+    .legend-item {
+        width: 100%;
+        min-width: auto;
+        padding: 6px 10px;
+    }
+    
+    .legend-text {
+        font-size: 10px;
+    }
+    
+    .legend-value {
+        font-size: 14px;
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+    }
+    
+    /* Total joueurs compact */
+    .total-players-display {
+        padding: 8px 15px !important;
+        gap: 10px !important;
+    }
+    
+    .total-number {
+        font-size: 24px !important;
+    }
+    
+    .total-label {
+        font-size: 10px !important;
+        text-align: center;
+    }
+}

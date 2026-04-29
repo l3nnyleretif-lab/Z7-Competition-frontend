@@ -1,0 +1,63 @@
+/* ========== ADMIN LOGIN ========== */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #2a2a2a;
+}
+
+.login-box {
+    background: #3a3a3a;
+    padding: 40px;
+    border-radius: 12px;
+    width: 400px;
+    border: 2px solid #33C6FF;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #33C6FF;
+    font-size: 28px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #555;
+    border: 2px solid #666;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.login-box input:focus {
+    outline: none;
+    border-color: #33C6FF;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background: #33C6FF;
+    border: none;
+    color: #000;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 900;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.login-box button:hover {
+    background: #0099ff;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
